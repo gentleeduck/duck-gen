@@ -1,0 +1,6 @@
+echo "[husky] pre-commit checks starting..."
+
+pnpm -s biome check --write .
+
+echo "[husky] pre-commit checks passed"
+

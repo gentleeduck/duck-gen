@@ -1,0 +1,162 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.3.11/schema.json",
+  "assist": {
+    "actions": {
+      "source": {
+        "recommended": true
+      }
+    },
+    "enabled": true
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!**/node_modules.root-owned",
+      "!**/dist",
+      "!**/build",
+      "!**/out",
+      "!**/coverage",
+      "!**/public",
+      "!**/.next",
+      "!**/apps/docs/.next",
+      "!**/website",
+      "!**/.*",
+      "!**/generated.root-owned",
+      "!**/old_*",
+      "!packages/___",
+      "./apps/docs/__ui_registry__/**",
+      "!packages/_oldstuff_refactor",
+      "!packages/benchmark",
+      "!packages/duck-orm-skitch"
+    ]
+  },
+  "formatter": {
+    "attributePosition": "multiline",
+    "bracketSameLine": true,
+    "bracketSpacing": true,
+    "enabled": true,
+    "formatWithErrors": false,
+    "includes": [
+      "**",
+      "!**/node_modules/**",
+      "!**/node_modules.root-owned/**",
+      "!**/dist/**",
+      "!**/build/**",
+      "!**/out/**",
+      "!**/coverage/**",
+      "!**/test/**",
+      "!**/public/**",
+      "!**/.next/**",
+      "!**/apps/docs/.next/**",
+      "!**/website/**",
+      "!**/.*/**",
+      "!**/generated.root-owned/**",
+      "!**/old_*/**",
+      "!packages/___/**",
+      "./apps/docs/__ui_registry__/**",
+      "!packages/_oldstuff_refactor/**",
+      "!packages/benchmark/**",
+      "!packages/duck-orm-skitch/**"
+    ],
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 120
+  },
+  "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    },
+    "formatter": {
+      "arrowParentheses": "always",
+      "attributePosition": "auto",
+      "bracketSameLine": true,
+      "bracketSpacing": true,
+      "jsxQuoteStyle": "double",
+      "quoteProperties": "asNeeded",
+      "quoteStyle": "single",
+      "semicolons": "asNeeded",
+      "trailingCommas": "all"
+    },
+    "globals": ["Global1"]
+  },
+  "linter": {
+    "enabled": true,
+    "includes": [
+      "**",
+      "!**/node_modules/**",
+      "!**/node_modules.root-owned/**",
+      "!**/dist/**",
+      "!**/build/**",
+      "!**/out/**",
+      "!**/coverage/**",
+      "!**/public/**",
+      "!**/.next/**",
+      "!**/apps/docs/.next/**",
+      "!**/website/**",
+      "!**/.*/**",
+      "!**/generated.root-owned/**",
+      "!**/old_*/**",
+      "!**/_*/**",
+      "!apps/docs/**",
+      "!apps/upload-api/**",
+      "!apps/www/**",
+      "!apps/benchmark/**",
+      "!packages/___/**",
+      "!packages/_oldstuff_refactor/**",
+      "!packages/duck-state/**",
+      "!packages/duck-benchmark/**",
+      "!packages/registry-build-duckui/**",
+      "!packages/sandbox-server/**",
+      "!**/duck-state/**",
+      "!**/upload/**",
+      "!**/table/**",
+      "!**/combobox.tsx"
+    ],
+    "rules": {
+      "complexity": {
+        "noBannedTypes": "off"
+      },
+      "nursery": {
+        "noImportCycles": "off",
+        "useSortedClasses": {
+          "fix": "safe",
+          "level": "info",
+          "options": {
+            "attributes": ["className", "class"],
+            "functions": ["clsx", "cva", "tw", "twMerge", "cn", "twJoin", "tv"]
+          }
+        }
+      },
+      "recommended": false,
+      "style": {
+        "useImportType": "on"
+      },
+      "suspicious": {
+        "noDocumentCookie": "off",
+        "noDoubleEquals": "error",
+        "noExplicitAny": "off",
+        "noThenProperty": "error",
+        "noUnknownAtRules": "info",
+        "noVar": "error",
+        "useGetterReturn": "error",
+        "useIsArray": "error"
+      }
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
+  "overrides": [
+    {
+      "formatter": {
+        "indentWidth": 2
+      },
+      "includes": ["**/*.json"]
+    }
+  ],
+  "plugins": []
+}

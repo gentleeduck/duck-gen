@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "author": "gentleduck",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react-swc": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "@vitest/ui": "catalog:",
+    "vitest": "catalog:"
+  },
+  "description": "this is a package for `vitest` test configurations",
+  "devDependencies": {
+    "@gentleduck/typescript-config": "workspace:*"
+  },
+  "keywords": [
+    "vitest",
+    "vitest-config"
+  ],
+  "license": "MIT",
+  "main": "index.ts",
+  "name": "@gentleduck/vitest-config",
+  "homepage": "https://github.com/gentleeduck/duck-ui/tree/master/tooling/vitest#readme",
+  "bugs": {
+    "url": "https://github.com/gentleeduck/duck-ui/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gentleeduck/duck-ui.git",
+    "directory": "tooling/vitest"
+  },
+  "packageManager": "pnpm@10.11.1",
+  "private": true,
+  "scripts": {
+    "clean": "rimraf dist .cache .turbo node_modules .next .velite",
+    "clean:git": "git clean -xdf .cache .turbo node_modules dist",
+    "format": "biome format --write ./",
+    "lint": "biome lint --write ./"
+  },
+  "type": "module",
+  "types": "index.ts",
+  "version": "0.0.1"
+}

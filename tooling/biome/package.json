@@ -1,0 +1,28 @@
+{
+  "devDependencies": {
+    "@biomejs/biome": "2.3.11"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "exports": {
+    ".": "./config.json"
+  },
+  "name": "@gentleduck/biome-config",
+  "author": "GentleDuck (https://www.gentleduck.org)",
+  "license": "MIT",
+  "homepage": "https://github.com/gentleeduck/duck-ui/tree/master/tooling/biome#readme",
+  "bugs": {
+    "url": "https://github.com/gentleeduck/duck-ui/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gentleeduck/duck-ui.git",
+    "directory": "tooling/biome"
+  },
+  "packageManager": "pnpm@10.11.1",
+  "private": true,
+  "scripts": {},
+  "type": "module",
+  "version": "0.1.0"
+}

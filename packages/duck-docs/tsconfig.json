@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "./dist",
+    "paths": {
+      "@duck-docs/*": ["./src/*"],
+      "@gentleduck/registry-ui-duckui/*": ["../registry-ui-duckui/src/*"]
+    },
+    "jsx": "react-jsx"
+  },
+  "exclude": ["node_modules", "dist"],
+  "extends": "@gentleduck/typescript-config/internal-package.json",
+  "include": ["./src/**/*.ts", "./src/**/*.tsx"]
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "author": "gentleduck",
+  "dependencies": {
+    "@vitejs/plugin-react-swc": "catalog:",
+    "tsdown": "catalog:"
+  },
+  "description": "this is a package for `tsdown` build configs",
+  "devDependencies": {
+    "@gentleduck/typescript-config": "workspace:*"
+  },
+  "keywords": [
+    "tsdown",
+    "tsdown-config"
+  ],
+  "license": "MIT",
+  "main": "index.ts",
+  "name": "@gentleduck/tsdown-config",
+  "homepage": "https://github.com/gentleeduck/duck-ui/tree/master/tooling/tsdown#readme",
+  "bugs": {
+    "url": "https://github.com/gentleeduck/duck-ui/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gentleeduck/duck-ui.git",
+    "directory": "tooling/tsdown"
+  },
+  "packageManager": "pnpm@10.10.0",
+  "private": true,
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo node_modules dist",
+    "format": "biome format --write ./",
+    "lint": "biome lint --write ./"
+  },
+  "type": "module",
+  "types": "index.ts",
+  "version": "0.0.1"
+}
