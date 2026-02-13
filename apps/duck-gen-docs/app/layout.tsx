@@ -5,8 +5,6 @@ import { DocsProvider, TailwindIndicator, ThemeProvider } from '@gentleduck/docs
 import { cn } from '@gentleduck/libs/cn'
 import { Toaster } from '@gentleduck/registry-ui-duckui/sonner'
 import { KeyProvider } from '@gentleduck/vim/react'
-import { Analytics as VercelAnalytics } from '@vercel/analytics/react'
-import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Geist_Mono, Montserrat } from 'next/font/google'
 import { docsConfig } from '~/config/docs'
 import { METADATA } from '~/config/metadata'
@@ -80,8 +78,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </div>
             </DocsProvider>
 
-            <SpeedInsights />
-            <VercelAnalytics />
             <Toaster />
             {process.env.NODE_ENV === 'development' && <TailwindIndicator />}
           </ThemeProvider>
