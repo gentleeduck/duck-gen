@@ -6,7 +6,7 @@ message registries. It is currently tested with NestJS.
 ## Install
 
 ```bash
-pnpm add -D @gentleduck/gen
+bun add -d @gentleduck/gen
 ```
 
 ## Quick start
@@ -53,7 +53,7 @@ export const AuthMessages = [
 Run the generator:
 
 ```bash
-pnpm exec duck-gen
+bunx duck-gen
 ```
 
 Import generated types (package outputs only exist when you don't set `outputSource`):

@@ -1,12 +1,12 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "engines": {
-    "node": ">=22.0.0"
+    "bun": ">=1.3.5"
   },
   "author": "gentleduck",
   "dependencies": {
-    "@vitejs/plugin-react-swc": "catalog:",
-    "tsdown": "catalog:"
+    "@vitejs/plugin-react-swc": "^3.11.0",
+    "tsdown": "0.18.3"
   },
   "description": "this is a package for `tsdown` build configs",
   "devDependencies": {
@@ -19,16 +19,16 @@
   "license": "MIT",
   "main": "index.ts",
   "name": "@gentleduck/tsdown-config",
-  "homepage": "https://github.com/gentleeduck/duck-ui/tree/master/tooling/tsdown#readme",
+  "homepage": "https://github.com/gentleeduck/duck-gen/tree/master/tooling/tsdown#readme",
   "bugs": {
-    "url": "https://github.com/gentleeduck/duck-ui/issues"
+    "url": "https://github.com/gentleeduck/duck-gen/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gentleeduck/duck-ui.git",
+    "url": "git+https://github.com/gentleeduck/duck-gen.git",
     "directory": "tooling/tsdown"
   },
-  "packageManager": "pnpm@10.10.0",
+  "packageManager": "bun@1.3.5",
   "private": true,
   "scripts": {
     "clean": "git clean -xdf .cache .turbo node_modules dist",

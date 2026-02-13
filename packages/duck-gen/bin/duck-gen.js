@@ -1,13 +1,13 @@
-#!/usr/bin/env node
-// 🦆 Duck Gen CLI shim (prefers compiled output, falls back to tsx for dev).
+#!/usr/bin/env bun
+// 🦆 Duck Gen CLI shim (prefers compiled output, falls back to source for dev).
 import { spawnSync } from 'node:child_process'
 import { existsSync } from 'node:fs'
-import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 
+const bunExec = process.execPath || 'bun'
 const distPath = fileURLToPath(new URL('../dist/index.js', import.meta.url))
 if (existsSync(distPath)) {
-  const result = spawnSync(process.execPath, [distPath], { stdio: 'inherit' })
+  const result = spawnSync(bunExec, [distPath], { stdio: 'inherit' })
   if (result.error) {
     console.error(result.error)
     process.exit(1)
@@ -17,12 +17,7 @@ if (existsSync(distPath)) {
 
 const srcPath = fileURLToPath(new URL('../src/index.ts', import.meta.url))
 if (existsSync(srcPath)) {
-  const require = createRequire(import.meta.url)
-  const loaderPath = require.resolve('tsx/esm')
-
-  const result = spawnSync(process.execPath, ['--import', loaderPath, srcPath], {
-    stdio: 'inherit',
-  })
+  const result = spawnSync(bunExec, [srcPath], { stdio: 'inherit' })
 
   if (result.error) {
     console.error(result.error)

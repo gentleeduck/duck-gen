@@ -9,21 +9,21 @@ React Query, and a typed i18n dictionary.
 From the repo root:
 
 ```bash
-pnpm install
-pnpm --filter @gentleduck/duck-gen-example gen
+bun install
+bun run --filter @gentleduck/duck-gen-example gen
 ```
 
 ## Build
 
 ```bash
-pnpm --filter @gentleduck/duck-gen-example build
+bun run --filter @gentleduck/duck-gen-example build
 ```
 
 ## Run (optional)
 
 ```bash
-pnpm --filter @gentleduck/duck-gen-example-server dev
-pnpm --filter @gentleduck/duck-gen-example-client dev
+bun run --filter @gentleduck/duck-gen-example-server dev
+bun run --filter @gentleduck/duck-gen-example-client dev
 ```
 
 By default, the client expects the API at `http://localhost:3000`.

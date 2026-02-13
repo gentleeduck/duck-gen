@@ -6,7 +6,7 @@ maps. It gives you typed request bodies, params, query strings, and responses.
 ## Install
 
 ```bash
-pnpm add @gentleduck/query
+bun add @gentleduck/query
 ```
 
 ## Quick start

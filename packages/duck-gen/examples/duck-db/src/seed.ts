@@ -13,7 +13,7 @@
  *    DATABASE_URL=postgres://user:pass@localhost:5432/dbname
  *
  * 2) Run:
- *    pnpm tsx seed.ts
+ *    bun seed.ts
  *
  * Options:
  * - SEED_TRUNCATE=1        Truncate control-plane tables first (CASCADE)
@@ -26,7 +26,7 @@
  * - Emails/usernames include the seed tag to avoid collisions without truncation.
  */
 
-/* Run: DATABASE_URL=postgres://... pnpm tsx seed.ts */
+/* Run: DATABASE_URL=postgres://... bun seed.ts */
 /* Optional: SEED_TRUNCATE=1 SEED_TAG=dev SEED_SCALE=0.2 SEED_CHUNK=500 */
 
 import { createHash, randomUUID } from 'node:crypto'

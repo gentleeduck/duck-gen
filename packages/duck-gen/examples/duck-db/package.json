@@ -30,10 +30,10 @@
     "db:migrate": "drizzle-kit migrate",
     "db:pull": "drizzle-kit pull",
     "db:push": "drizzle-kit push",
-    "db:reset": "tsx ./src/reset-db.ts && drizzle-kit push",
-    "db:seed": "tsx ./src/seed.ts",
-    "db:start": "pnpm run db:generate && pnpm run db:reset && pnpm run db:seed && pnpm run db:studio",
-    "db:studio": "npx drizzle-kit studio --host 0.0.0.0 --port 4983"
+    "db:reset": "bun ./src/reset-db.ts && drizzle-kit push",
+    "db:seed": "bun ./src/seed.ts",
+    "db:start": "bun run db:generate && bun run db:reset && bun run db:seed && bun run db:studio",
+    "db:studio": "bunx drizzle-kit studio --host 0.0.0.0 --port 4983"
   },
   "type": "module",
   "version": "0.1.0"
