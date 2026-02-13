@@ -18,7 +18,6 @@
   },
   "devDependencies": {
     "@gentleduck/typescript-config": "workspace:*",
-    "@opennextjs/cloudflare": "^1.0.0",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "22.19.3",
     "@types/react": "^19.2.8",
@@ -52,8 +51,8 @@
     "postbuild": "next-sitemap",
     "check-types": "tsc -p tsconfig.json --noEmit --pretty false --skipLibCheck",
     "start": "next start",
-    "preview": "bunx @cloudflare/next-on-pages",
-    "deploy": "bunx @cloudflare/next-on-pages && bunx wrangler pages deploy .vercel/output/static"
+    "preview": "bunx vercel deploy",
+    "deploy": "bunx vercel deploy --prod"
   },
   "version": "0.0.21"
 }
