@@ -13,5 +13,8 @@ jobs:
         with:
           bun-version: 1.3.5
 
-      - run: bun install --frozen-lockfile
+      - name: Install dependencies
+        env:
+          HUSKY: 0
+        run: bun install --frozen-lockfile
       - run: bun run build

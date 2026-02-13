@@ -66,7 +66,7 @@
     "clean": "rimraf dist .cache .turbo node_modules .next .velite",
     "clean:git": "git clean -xdf .cache .turbo node_modules dist",
     "lint:ws": "bunx sherif@latest",
-    "postinstall": "bun run lint:ws",
-    "prepare": "husky"
+    "postinstall": "if [ -n \"$CI\" ]; then echo \"Skipping workspace lint in CI\"; else bun run lint:ws; fi",
+    "prepare": "if [ -n \"$CI\" ]; then echo \"Skipping husky install in CI\"; else husky; fi"
   }
 }
