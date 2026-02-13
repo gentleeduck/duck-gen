@@ -1,6 +1,19 @@
 import { ImageResponse } from 'next/og'
 
-async function loadAssets(): Promise<{ name: string; data: Buffer; weight: 400 | 600; style: 'normal' }[]> {
+export const runtime = 'edge'
+
+const decodeBase64ToArrayBuffer = (base64: string): ArrayBuffer => {
+  const binary = atob(base64)
+  const bytes = new Uint8Array(binary.length)
+
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index)
+  }
+
+  return bytes.buffer
+}
+
+async function loadAssets(): Promise<{ name: string; data: ArrayBuffer; weight: 400 | 600; style: 'normal' }[]> {
   const [{ base64Font: normal }, { base64Font: mono }, { base64Font: semibold }] = await Promise.all([
     import('./geist-regular-otf.json').then((mod) => mod.default || mod),
     import('./geistmono-regular-otf.json').then((mod) => mod.default || mod),
@@ -9,19 +22,19 @@ async function loadAssets(): Promise<{ name: string; data: Buffer; weight: 400 |
 
   return [
     {
-      data: Buffer.from(normal, 'base64'),
+      data: decodeBase64ToArrayBuffer(normal),
       name: 'Geist',
       style: 'normal' as const,
       weight: 400 as const,
     },
     {
-      data: Buffer.from(mono, 'base64'),
+      data: decodeBase64ToArrayBuffer(mono),
       name: 'Geist Mono',
       style: 'normal' as const,
       weight: 400 as const,
     },
     {
-      data: Buffer.from(semibold, 'base64'),
+      data: decodeBase64ToArrayBuffer(semibold),
       name: 'Geist',
       style: 'normal' as const,
       weight: 600 as const,

@@ -11,6 +11,8 @@ import React from 'react'
 import { SLUG_METADATA } from '~/config/metadata'
 import { docs } from '../../../../.velite'
 
+export const runtime = 'edge'
+
 interface DocPageProps {
   params: {
     slug: string[]
