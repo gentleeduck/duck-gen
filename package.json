@@ -18,10 +18,10 @@
   "homepage": "https://www.gentleduck.org",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gentleeduck/duck-gen.git"
+    "url": "git+https://github.com/gentleeduck/duck-ui.git"
   },
   "bugs": {
-    "url": "https://github.com/gentleeduck/duck-gen/issues"
+    "url": "https://github.com/gentleeduck/duck-ui/issues"
   },
   "keywords": [
     "gentleduck",

@@ -9,7 +9,7 @@ Published package scope remains `@gentleduck/*`.
  
 ## Documentation
 - Website: https://gen.gentleduck.org
-- GitHub: https://github.com/gentleeduck/duck-gen
+- GitHub: https://github.com/gentleeduck/duck-ui
 
 ## What's in the repo
 ### App
@@ -29,7 +29,7 @@ Published package scope remains `@gentleduck/*`.
 
 ## Getting Started
 ```bash
-git clone https://github.com/gentleeduck/duck-gen.git
+git clone https://github.com/gentleeduck/duck-ui.git
 cd duck-gen
 bun install
 ```

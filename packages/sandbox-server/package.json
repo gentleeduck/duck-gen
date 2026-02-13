@@ -72,13 +72,13 @@
   "name": "@gentleduck/sandbox-server",
   "author": "GentleDuck (https://www.gentleduck.org)",
   "license": "MIT",
-  "homepage": "https://github.com/gentleeduck/duck-gen/tree/master/packages/sandbox-server#readme",
+  "homepage": "https://github.com/gentleeduck/duck-ui/tree/master/packages/sandbox-server#readme",
   "bugs": {
-    "url": "https://github.com/gentleeduck/duck-gen/issues"
+    "url": "https://github.com/gentleeduck/duck-ui/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gentleeduck/duck-gen.git",
+    "url": "git+https://github.com/gentleeduck/duck-ui.git",
     "directory": "packages/sandbox-server"
   },
   "private": true,

@@ -5,7 +5,7 @@ export const siteConfig = {
     '@gentleduck/gen is a general-purpose compiler extension that generates type-safe API routes and message keys across frameworks. It is currently being tested with NestJS to validate the workflow.',
   githubRepo: '',
   links: {
-    github: 'https://github.com/gentleeduck/duck-gen',
+    github: 'https://github.com/gentleeduck/duck-ui',
     twitter: 'https://x.com/wild_ducka',
     email: 'support@gentleduck.org',
   },
