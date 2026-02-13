@@ -1,7 +1,10 @@
 import react from '@vitejs/plugin-react-swc'
+import type { defineConfig } from 'tsdown'
 
-/** @type {import('tsdown').UserConfig} */
-export const config = {
+type TsdownConfig = Parameters<typeof defineConfig>[0]
+
+/** @type {TsdownConfig} */
+export const config: TsdownConfig = {
   clean: true,
   dts: true,
   entry: ['./index.ts'],
@@ -13,7 +16,7 @@ export const config = {
   },
   outDir: './dist',
   platform: 'neutral',
-  plugins: [react()],
+  plugins: [react() as never],
   shims: true,
   sourcemap: false,
   target: 'esnext',
