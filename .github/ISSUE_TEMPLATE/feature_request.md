@@ -25,12 +25,11 @@ A clear and concise description of the feature you’d like to see.
 
 ```tsx
 // Example usage
-import { DuckMagic } from "@gentleduck/ui"
+import type { ApiRoutes } from "@gentleduck/gen/nestjs"
+import { createDuckQueryClient } from "@gentleduck/query"
 
-<DuckMagic variant="shiny" duration={300}>
-  Make things sparkle ✨
-</DuckMagic>
-````
+const client = createDuckQueryClient<ApiRoutes>({ baseURL: "/api" })
+```
 
 ---
 

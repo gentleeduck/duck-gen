@@ -178,7 +178,7 @@ await app.listen(3000)
 ## Step 3: Generate types
 
 ```bash
-pnpm exec duck-gen
+bunx duck-gen
 ```
 
 Output:
@@ -381,7 +381,7 @@ Here is the complete flow:
         B["Message Constants\\n@duckgen JSDoc tags"]
     end
     subgraph Generate["2. Generate Types"]
-        C["pnpm exec duck-gen"]
+        C["bunx duck-gen"]
         D["duck-gen-api-routes.d.ts\\nApiRoutes, RouteReq, RouteRes"]
         E["duck-gen-messages.d.ts\\nDuckgenMessageKey, DuckgenI18n"]
     end

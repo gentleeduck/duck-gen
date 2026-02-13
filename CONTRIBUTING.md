@@ -1,4 +1,4 @@
-# Contributing to Gentleduck 🦆✨
+# Contributing to @duck-gen
 
 First off, thank you for considering contributing to **Gentleduck**!
 We welcome all kinds of contributions — from bug reports and documentation improvements to feature requests and new packages.
@@ -9,7 +9,7 @@ This document provides guidelines to help you get started.
 
 ## Code of Conduct
 
-By participating in this project, you agree to uphold our [Code of Conduct](./CODE_OF_CONDUCT.md) (coming soon).
+By participating in this project, you agree to uphold our [Code of Conduct](./CODE_OF_CONDUCT.md).
 Please treat everyone with respect and kindness.
 
 ---
@@ -19,28 +19,28 @@ Please treat everyone with respect and kindness.
 ### 1. Fork & Clone
 
 ```bash
-git clone https://github.com/gentleeduck/duck-ui.git
-cd duck-ui
+git clone https://github.com/gentleeduck/duck-gen.git
+cd duck-gen
 ```
 
 ### 2. Install Dependencies
 
-We use **pnpm** with workspaces:
+We use **Bun** with workspaces:
 
 ```bash
-pnpm install
+bun install
 ```
 
 ### 3. Build All Packages
 
 ```bash
-pnpm build
+bun run build
 ```
 
 ### 4. Run in Development
 
 ```bash
-pnpm dev
+bun run dev
 ```
 
 This will spin up local development environments for the packages and docs.
@@ -88,7 +88,7 @@ This will spin up local development environments for the packages and docs.
    * Run all tests before pushing:
 
      ```bash
-     pnpm test
+     bun run test
      ```
 
 ---
@@ -113,7 +113,7 @@ This will spin up local development environments for the packages and docs.
 
 ## Reporting Issues
 
-If you find a bug, please [open an issue](https://github.com/gentleeduck/duck-ui/issues) with:
+If you find a bug, please [open an issue](https://github.com/gentleeduck/duck-gen/issues) with:
 
 * Steps to reproduce
 * Expected behavior
@@ -134,7 +134,7 @@ If you find a bug, please [open an issue](https://github.com/gentleeduck/duck-ui
 ## Tips
 
 * Start small - even fixing a typo helps!
-* Look at the ["good first issue"](https://github.com/gentleeduck/duck-ui/labels/good%20first%20issue) label for beginner-friendly contributions.
+* Look at the ["good first issue"](https://github.com/gentleeduck/duck-gen/labels/good%20first%20issue) label for beginner-friendly contributions.
 * Ask questions! We’re happy to guide you.
 
 ---
@@ -142,4 +142,3 @@ If you find a bug, please [open an issue](https://github.com/gentleeduck/duck-ui
 ## License
 
 By contributing, you agree that your contributions will be licensed under the project’s [MIT License](./LICENSE).
-

@@ -7,7 +7,6 @@
   "fixed": [],
   "ignore": [
     "@gentleduck/gen-docs",
-    "@gentleduck/ui-docs",
     "@gentleduck/www"
   ],
   "linked": [],

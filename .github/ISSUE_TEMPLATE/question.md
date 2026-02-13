@@ -20,11 +20,10 @@ What are you unsure about? Be as specific as possible.
 
 ## Environment (if applicable)
 - **OS:** [e.g. Ubuntu 22.04 / Windows 11 / macOS Sonoma]  
-- **Node.js version:** [e.g. v20.10.0]  
-- **pnpm version:** [e.g. 9.0.0]  
+- **Bun version:** [e.g. 1.3.5]  
 - **Gentleduck Package(s) & Version(s):**  
-  - `@gentleduck/ui@X.Y.Z`  
-  - `@gentleduck/motion@X.Y.Z`  
+  - `@gentleduck/gen@X.Y.Z`  
+  - `@gentleduck/query@X.Y.Z`  
   - …  
 
 ---
@@ -34,12 +33,11 @@ If your question involves using Gentleduck in code, please share a **minimal cod
 
 ```tsx
 // Example
-import { DuckButton } from "@gentleduck/ui"
+import type { ApiRoutes } from "@gentleduck/gen/nestjs"
+import { createDuckQueryClient } from "@gentleduck/query"
 
-<DuckButton variant="quack" onClick={() => alert("Hello!")}>
-  Test
-</DuckButton>
-````
+const client = createDuckQueryClient<ApiRoutes>({ baseURL: "/api" })
+```
 
 ---
 
@@ -54,4 +52,3 @@ import { DuckButton } from "@gentleduck/ui"
 
 * Add links, references, or related issues/discussions here.
 * Mention if this should be turned into a feature request or bug report.
-

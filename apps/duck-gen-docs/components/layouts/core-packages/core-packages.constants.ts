@@ -17,13 +17,13 @@ import {
   Workflow,
 } from 'lucide-react'
 
-const uiDocsBaseUrl = 'https://ui.gentleduck.org'
+const uiDocsBaseUrl = 'https://gen.gentleduck.org'
 
 export const packages = [
   {
     description:
       'Production-ready React components, blocks, and layouts built for speed, accessibility, and consistent product delivery.',
-    href: 'https://ui.gentleduck.org',
+    href: 'https://gen.gentleduck.org',
     icon: LayoutGrid,
     name: 'Gentleduck UI',
     status: 'new',

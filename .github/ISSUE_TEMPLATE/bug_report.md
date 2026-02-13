@@ -15,7 +15,7 @@ A clear and concise description of the bug.
 Provide a step-by-step guide to reproduce the issue (the smaller the reproduction, the better):
 
 1. Setup project with version `X.Y.Z`
-2. Run command `pnpm dev`
+2. Run command `bun run dev`
 3. Use component `Button` with props `{...}`
 4. See error
 
@@ -41,18 +41,17 @@ Please complete the following information:
 
 - **OS:** [e.g. Ubuntu 22.04, Windows 11, macOS Sonoma]
 - **Browser & Version:** [e.g. Chrome 118, Firefox 118]
-- **Node.js Version:** [e.g. v20.10.0]
-- **pnpm Version:** [e.g. 9.0.0]
+- **Bun Version:** [e.g. 1.3.5]
 - **Gentleduck Package(s) & Versions:**  
-  - `@gentleduck/ui@X.Y.Z`  
-  - `@gentleduck/motion@X.Y.Z`  
+  - `@gentleduck/gen@X.Y.Z`  
+  - `@gentleduck/query@X.Y.Z`  
   - …  
 
 ---
 
 ## Project Context
 - Framework: [e.g. Next.js 15, Vite 6, CRA]  
-- Build Tool: [e.g. Turborepo, Nx, plain pnpm workspaces]  
+- Build Tool: [e.g. Turborepo, Nx, plain Bun workspaces]  
 - Configurations:  
   - Tailwind version & config (if relevant)  
   - Custom webpack/vite settings (if relevant)  
@@ -70,6 +69,6 @@ Paste any relevant logs or error messages (console, server, or build logs):
 
 ```bash
 # Example
-pnpm dev
+bun run dev
 Error: Button component failed to render...
-
+```

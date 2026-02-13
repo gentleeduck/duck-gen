@@ -1,59 +1,42 @@
 <p align="center">
-  <img src="./apps/www/public/og/root.png" alt="Duck UI Logo" width="800"/>
+  <img src="./apps/duck-gen-docs/public/og/root.png" alt="Duck Gen Logo" width="800"/>
 </p>
 
-# @gentleduck
+# @duck-gen
 
-GentleDuck is an open source organization building production-grade developer tooling. We exist to 
-reduce friction across the entire development lifecycle, from UI and interaction design to 
-documentation, automation, testing, and systems performance.
+`@duck-gen` is the GentleDuck monorepo for Duck Gen, Duck Query, and related developer tooling.
+Published package scope remains `@gentleduck/*`.
  
 ## Documentation
-- Website: https://www.gentleduck.org
-- GitHub: https://github.com/gentleeduck/duck-ui
+- Website: https://gen.gentleduck.org
+- GitHub: https://github.com/gentleeduck/duck-gen
 
-## What's in the Repo
-### Apps
-- `apps/duck-ui-docs` – UI docs site (components, blocks, charts, themes)
+## What's in the repo
+### App
 - `apps/duck-gen-docs` – Duck Gen docs site
 
-### Packages (Selected)
-- `packages/duck-docs` – shared docs app kit used by the docs apps
-- `packages/registry-ui-duckui` – UI components
-- `packages/registry-blocks-duckui` – blocks and layouts
-- `packages/registry-examples-duckui` – examples used in docs
-- `packages/duck-libs` – utilities
-- `packages/duck-hooks` – React hooks
-- `packages/duck-motion` – motion primitives
-- `packages/duck-variants` – class/variant helpers
-- `packages/duck-vim` – keybinding engine
-- `packages/duck-lazy` – lazy-loading utilities
+### Packages
+- `packages/duck-gen` – `@gentleduck/gen` type-safe API/message generator
+- `packages/duck-query` – `@gentleduck/query` type-safe Axios client
+- `packages/duck-ttest` – `@gentleduck/ttest` type-level testing utilities
+- `packages/duck-skitch` – internal package
+- `packages/sandbox-server` – internal sandbox server
 
-### Published packages (npm)
-- `@gentleduck/benchmark` – benchmarking tool for Duck UI components
-- `@gentleduck/cli` – CLI to add components and bootstrap integrations
+### Published packages
 - `@gentleduck/gen` – type-safe API and message generator (NestJS-tested)
-- `@gentleduck/hooks` – React hooks
-- `@gentleduck/lazy` – lazy-loading utilities
-- `@gentleduck/libs` – utilities and helpers
-- `@gentleduck/motion` – motion primitives
-- `@gentleduck/primitives` – headless UI primitives
 - `@gentleduck/query` – type-safe Axios client
-- `@gentleduck/shortcut` – keyboard shortcut utilities
-- `@gentleduck/variants` – class/variant helpers
-- `@gentleduck/vim` – keybinding engine
+- `@gentleduck/ttest` – compile-time type testing utilities
 
 ## Getting Started
 ```bash
-git clone https://github.com/gentleeduck/duck-ui.git
-cd duck-ui
-pnpm install
+git clone https://github.com/gentleeduck/duck-gen.git
+cd duck-gen
+bun install
 ```
 
-## Run a Single App
+## Run docs locally
 ```bash
-pnpm --filter @gentleduck/ui-docs dev
-pnpm --filter @gentleduck/gen-docs dev
+bun run --filter @gentleduck/gen-docs dev
 ```
 
 ## Contributing

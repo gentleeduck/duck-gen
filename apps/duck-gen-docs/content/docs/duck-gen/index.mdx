@@ -103,7 +103,7 @@ Here is the step-by-step flow:
 <Step>Install the package</Step>
 
 ```bash
-pnpm add -D @gentleduck/gen
+bun add -d @gentleduck/gen
 ```
 
 <Step>Create duck-gen.json in your project root</Step>
@@ -138,7 +138,7 @@ The `$schema` field gives you autocomplete and validation in your editor.
 <Step>Run the generator</Step>
 
 ```bash
-pnpm exec duck-gen
+bunx duck-gen
 ```
 
 You should see output like:
@@ -208,10 +208,10 @@ Add a script to your `package.json` for convenience:
 
 ```bash
 # Run directly
-pnpm exec duck-gen
+bunx duck-gen
 
 # Or via script
-pnpm generate
+bun run generate
 ```
 
 **CLI behavior:**
@@ -245,11 +245,11 @@ pnpm generate
 
 ## Requirements
 
-- **Node.js** 22 or newer.
+- **Bun** 1.3.5 or newer.
 - A **TypeScript** project with a valid `tsconfig.json`.
 - **NestJS** (for the current tested adapter).
 
 ## Contributing
 
 Duck Gen lives in the Gentleduck monorepo. Issues, fixes, and documentation
-improvements are welcome at [`@gentleduck`](https://github.com/gentleeduck/duck-ui).
+improvements are welcome at [`@gentleduck`](https://github.com/gentleeduck/duck-gen).

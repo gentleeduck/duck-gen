@@ -58,7 +58,6 @@
       "./packages/_oldstuff_refactor/",
       "./packages/duck-state/",
       "./packages/duck-benchmark/",
-      "./packages/duck-ui/",
       "./packages/benchmark/",
       "**/upload/**",
       "**/table/**",
