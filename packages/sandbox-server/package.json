@@ -83,16 +83,16 @@
   },
   "private": true,
   "scripts": {
-    "dev": "nodemon --exec bun ./src/main.ts && bun run format && bun run lint",
-    "drizzle:check": "drizzle-kit check",
-    "drizzle:generate": "drizzle-kit generate",
-    "drizzle:migrate": "drizzle-kit migrate",
-    "drizzle:pull": "drizzle-kit pull",
-    "drizzle:push": "drizzle-kit push",
-    "drizzle:studio": "drizzle-kit studio --verbose --port 4040",
-    "format": "bunx @biomejs/biome format --write ./",
-    "lint": "bunx @biomejs/biome lint --write ./src",
-    "lint:fix": "bunx @biomejs/biome lint --write --unsafe ./src"
+    "s:dev": "nodemon --exec bun ./src/main.ts && bun run format && bun run lint",
+    "s:drizzle:check": "drizzle-kit check",
+    "s:drizzle:generate": "drizzle-kit generate",
+    "s:drizzle:migrate": "drizzle-kit migrate",
+    "s:drizzle:pull": "drizzle-kit pull",
+    "s:drizzle:push": "drizzle-kit push",
+    "s:drizzle:studio": "drizzle-kit studio --verbose --port 4040",
+    "s:format": "bunx @biomejs/biome format --write ./",
+    "s:lint": "bunx @biomejs/biome lint --write ./src",
+    "s:lint:fix": "bunx @biomejs/biome lint --write --unsafe ./src"
   },
   "type": "module",
   "version": "0.0.0"
