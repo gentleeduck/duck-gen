@@ -1,5 +1,5 @@
 /**
- * React integration for access-engine.
+ * React integration for duck-iam.
  *
  * Two patterns:
  *   1. Server-driven (recommended): generate PermissionMap on server, pass to client
@@ -22,6 +22,7 @@
  *   // In any component:
  *   const { can } = useAccess();
  *   if (can("delete", "post")) { ... }
+ *   if (can("manage", "user", undefined, "admin")) { ... }
  *
  *   // Or declaratively:
  *   <Can action="manage" resource="team">
@@ -29,19 +30,44 @@
  *   </Can>
  */
 
-import type { PermissionKey, PermissionMap } from '../../core/types'
+import type { ReactNode } from 'react'
+import type { PermissionMap } from '../../core/types'
+import { buildPermissionKey } from '../../shared/keys'
 
 // We export factory functions so React is a peer dependency, not a hard one.
 // The consuming app calls these with their React import.
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Context + Provider
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ------------------------------------------------------------
+// Minimal React API surface -- matches React 18+ / 19
+// ------------------------------------------------------------
 
-export interface AccessContextValue {
-  permissions: PermissionMap
-  can: (action: string, resource: string, resourceId?: string) => boolean
-  cannot: (action: string, resource: string, resourceId?: string) => boolean
+interface ReactContext<T> {
+  Provider: unknown
+}
+
+interface ReactLike {
+  createContext<T>(defaultValue: T): ReactContext<T>
+  useContext<T>(context: ReactContext<T>): T
+  useMemo<T>(factory: () => T, deps: readonly unknown[]): T
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type -- matches React's own useCallback<T extends Function>
+  useCallback<T extends Function>(callback: T, deps: readonly unknown[]): T
+  createElement(type: unknown, props: Record<string, unknown> | null, ...children: ReactNode[]): ReactNode
+  useState<T>(initialState: T | (() => T)): [T, (value: T | ((prev: T) => T)) => void]
+  useEffect(effect: () => void | (() => void), deps?: readonly unknown[]): void
+}
+
+// ------------------------------------------------------------
+// Context + Provider
+// ------------------------------------------------------------
+
+export interface AccessContextValue<
+  TAction extends string = string,
+  TResource extends string = string,
+  TScope extends string = string,
+> {
+  permissions: PermissionMap<TAction, TResource, TScope>
+  can: (action: TAction, resource: TResource, resourceId?: string, scope?: TScope) => boolean
+  cannot: (action: TAction, resource: TResource, resourceId?: string, scope?: TScope) => boolean
 }
 
 /**
@@ -50,82 +76,99 @@ export interface AccessContextValue {
  *
  *   // lib/access.tsx
  *   import React from "react";
- *   import { createAccessControl } from "access-engine/client/react";
+ *   import { createAccessControl } from "duck-iam/client/react";
  *
  *   export const { AccessProvider, useAccess, Can, Cannot } = createAccessControl(React);
  */
-export function createAccessControl(React: any) {
+export function createAccessControl<
+  TAction extends string = string,
+  TResource extends string = string,
+  TScope extends string = string,
+>(React: ReactLike) {
   const { createContext, useContext, useMemo, useCallback } = React
 
   const AccessContext = createContext({
-    permissions: {},
+    permissions: {} as PermissionMap<TAction, TResource, TScope>,
     can: () => false,
     cannot: () => true,
-  } as AccessContextValue)
+  } as AccessContextValue<TAction, TResource, TScope>)
 
-  // ── Provider ──
+  // -- Provider --
 
-  function AccessProvider({ permissions, children }: { permissions: PermissionMap; children: any }) {
+  function AccessProvider({
+    permissions,
+    children,
+  }: {
+    permissions: PermissionMap<TAction, TResource, TScope>
+    children: ReactNode
+  }): ReactNode {
     const value = useMemo(() => {
-      const can = (action: string, resource: string, resourceId?: string): boolean => {
-        const key = resourceId ? `${action}:${resource}:${resourceId}` : `${action}:${resource}`
-        return permissions[key] ?? false
+      const can = (action: TAction, resource: TResource, resourceId?: string, scope?: TScope): boolean => {
+        const key = buildPermissionKey(action, resource, resourceId, scope)
+        return (permissions as Record<string, boolean>)[key] ?? false
       }
 
       return {
         permissions,
         can,
-        cannot: (a: string, r: string, id?: string) => !can(a, r, id),
+        cannot: (a: TAction, r: TResource, id?: string, s?: TScope) => !can(a, r, id, s),
       }
     }, [permissions])
 
     return React.createElement(AccessContext.Provider, { value }, children)
   }
 
-  // ── Hook ──
+  // -- Hook --
 
-  function useAccess(): AccessContextValue {
+  function useAccess(): AccessContextValue<TAction, TResource, TScope> {
     return useContext(AccessContext)
   }
 
-  // ── Declarative components ──
+  // -- Declarative components --
 
   function Can({
     action,
     resource,
     resourceId,
+    scope,
     children,
     fallback = null,
   }: {
-    action: string
-    resource: string
+    action: TAction
+    resource: TResource
     resourceId?: string
-    children: any
-    fallback?: any
-  }) {
+    scope?: TScope
+    children: ReactNode
+    fallback?: ReactNode
+  }): ReactNode {
     const { can } = useAccess()
-    return can(action, resource, resourceId) ? children : fallback
+    return can(action, resource, resourceId, scope) ? children : fallback
   }
 
   function Cannot({
     action,
     resource,
     resourceId,
+    scope,
     children,
   }: {
-    action: string
-    resource: string
+    action: TAction
+    resource: TResource
     resourceId?: string
-    children: any
-  }) {
+    scope?: TScope
+    children: ReactNode
+  }): ReactNode {
     const { cannot } = useAccess()
-    return cannot(action, resource, resourceId) ? children : null
+    return cannot(action, resource, resourceId, scope) ? children : null
   }
 
-  // ── Utility hook: fetch permissions from server ──
+  // -- Utility hook: fetch permissions from server --
 
-  function usePermissions(fetchFn: () => Promise<PermissionMap>, deps: any[] = []) {
-    const [permissions, setPermissions] = React.useState({} as PermissionMap)
+  function usePermissions(
+    fetchFn: () => Promise<PermissionMap<TAction, TResource, TScope>>,
+    deps: readonly unknown[] = [],
+  ) {
+    const [permissions, setPermissions] = React.useState({} as PermissionMap<TAction, TResource, TScope>)
     const [loading, setLoading] = React.useState(true)
     const [error, setError] = React.useState(null as Error | null)
 
@@ -133,13 +176,13 @@ export function createAccessControl(React: any) {
       let cancelled = false
       setLoading(true)
       fetchFn()
-        .then((perms) => {
+        .then((perms: PermissionMap<TAction, TResource, TScope>) => {
           if (!cancelled) {
             setPermissions(perms)
             setLoading(false)
           }
         })
-        .catch((err) => {
+        .catch((err: Error) => {
           if (!cancelled) {
             setError(err)
             setLoading(false)
@@ -151,9 +194,9 @@ export function createAccessControl(React: any) {
     }, deps)
 
     const can = useCallback(
-      (action: string, resource: string, resourceId?: string) => {
-        const key = resourceId ? `${action}:${resource}:${resourceId}` : `${action}:${resource}`
-        return permissions[key] ?? false
+      (action: TAction, resource: TResource, resourceId?: string, scope?: TScope) => {
+        const key = buildPermissionKey(action, resource, resourceId, scope)
+        return (permissions as Record<string, boolean>)[key] ?? false
       },
       [permissions],
     )
@@ -175,15 +218,20 @@ export function createAccessControl(React: any) {
  * Standalone permission checker (no React context needed).
  * Useful for one-off checks or non-React code.
  */
-export function createPermissionChecker(permissions: PermissionMap) {
+export function createPermissionChecker<
+  TAction extends string = string,
+  TResource extends string = string,
+  TScope extends string = string,
+>(permissions: PermissionMap<TAction, TResource, TScope>) {
+  const can = (action: TAction, resource: TResource, resourceId?: string, scope?: TScope): boolean => {
+    const key = buildPermissionKey(action, resource, resourceId, scope)
+    return (permissions as Record<string, boolean>)[key] ?? false
+  }
+
   return {
-    can: (action: string, resource: string, resourceId?: string): boolean => {
-      const key = resourceId ? `${action}:${resource}:${resourceId}` : `${action}:${resource}`
-      return permissions[key] ?? false
-    },
-    cannot: (action: string, resource: string, resourceId?: string): boolean => {
-      const key = resourceId ? `${action}:${resource}:${resourceId}` : `${action}:${resource}`
-      return !(permissions[key] ?? false)
+    can,
+    cannot: (action: TAction, resource: TResource, resourceId?: string, scope?: TScope): boolean => {
+      return !can(action, resource, resourceId, scope)
     },
     permissions,
   }

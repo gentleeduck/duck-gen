@@ -6,14 +6,15 @@
  *
  * Usage:
  *
- *   import { AccessClient } from "access-engine/client/vanilla";
+ *   import { AccessClient } from "duck-iam/client/vanilla";
  *
  *   // Initialize from server-provided permissions
  *   const access = new AccessClient(permissionsFromServer);
  *
  *   // Check
- *   access.can("delete", "post");       // boolean
- *   access.cannot("manage", "billing"); // boolean
+ *   access.can("delete", "post");                    // boolean
+ *   access.can("manage", "user", undefined, "admin"); // scoped check
+ *   access.cannot("manage", "billing");               // boolean
  *
  *   // With change listener (for reactive frameworks)
  *   access.subscribe((perms) => { rerender(); });
@@ -26,73 +27,127 @@
  */
 
 import type { PermissionMap } from '../../core/types'
+import { buildPermissionKey } from '../../shared/keys'
 
-type Listener = (permissions: PermissionMap) => void
+type Listener<TAction extends string = string, TResource extends string = string, TScope extends string = string> = (
+  permissions: PermissionMap<TAction, TResource, TScope>,
+) => void
 
-export class AccessClient {
-  private _permissions: PermissionMap
-  private _listeners = new Set<Listener>()
+export class AccessClient<
+  TAction extends string = string,
+  TResource extends string = string,
+  TScope extends string = string,
+> {
+  private _permissions: PermissionMap<TAction, TResource, TScope>
+  private _listeners = new Set<Listener<TAction, TResource, TScope>>()
 
-  constructor(permissions: PermissionMap = {}) {
-    this._permissions = permissions
+  constructor(permissions?: PermissionMap<TAction, TResource, TScope>) {
+    this._permissions = permissions ?? ({} as PermissionMap<TAction, TResource, TScope>)
   }
 
   /** Fetch permissions from a server endpoint */
-  static async fromServer(url: string, init?: RequestInit): Promise<AccessClient> {
+  static async fromServer<TA extends string = string, TR extends string = string, TS extends string = string>(
+    url: string,
+    init?: RequestInit,
+  ): Promise<AccessClient<TA, TR, TS>> {
     const res = await fetch(url, {
       ...init,
       headers: { 'Content-Type': 'application/json', ...(init?.headers ?? {}) },
     })
     if (!res.ok) throw new Error(`Failed to fetch permissions: ${res.status}`)
-    const perms: PermissionMap = await res.json()
-    return new AccessClient(perms)
+    const perms: PermissionMap<TA, TR, TS> = await res.json()
+    return new AccessClient<TA, TR, TS>(perms)
   }
 
-  get permissions(): Readonly<PermissionMap> {
+  get permissions(): Readonly<PermissionMap<TAction, TResource, TScope>> {
     return this._permissions
   }
 
-  can(action: string, resource: string, resourceId?: string): boolean {
-    const key = resourceId ? `${action}:${resource}:${resourceId}` : `${action}:${resource}`
-    return this._permissions[key] ?? false
+  can(action: TAction, resource: TResource, resourceId?: string, scope?: TScope): boolean {
+    const key = buildPermissionKey(action, resource, resourceId, scope)
+    return (this._permissions as Record<string, boolean>)[key] ?? false
   }
 
-  cannot(action: string, resource: string, resourceId?: string): boolean {
-    return !this.can(action, resource, resourceId)
+  cannot(action: TAction, resource: TResource, resourceId?: string, scope?: TScope): boolean {
+    return !this.can(action, resource, resourceId, scope)
   }
 
   /** Update permissions and notify listeners */
-  update(permissions: PermissionMap): void {
+  update(permissions: PermissionMap<TAction, TResource, TScope>): void {
     this._permissions = permissions
     for (const fn of this._listeners) fn(permissions)
   }
 
   /** Merge new permissions into existing */
-  merge(permissions: PermissionMap): void {
+  merge(permissions: PermissionMap<TAction, TResource, TScope>): void {
     this.update({ ...this._permissions, ...permissions })
   }
 
   /** Subscribe to permission changes. Returns unsubscribe function. */
-  subscribe(fn: Listener): () => void {
+  subscribe(fn: Listener<TAction, TResource, TScope>): () => void {
     this._listeners.add(fn)
     return () => this._listeners.delete(fn)
   }
 
-  /** Get all allowed actions for a resource type */
-  allowedActions(resource: string): string[] {
-    const actions: string[] = []
+  /**
+   * Get all allowed actions for a resource type.
+   *
+   * Handles all key formats:
+   *   - "action:resource" (2 parts)
+   *   - "action:resource:resourceId" (3 parts)
+   *   - "scope:action:resource" (3 parts)
+   *   - "scope:action:resource:resourceId" (4 parts)
+   */
+  allowedActions(resource: TResource): TAction[] {
+    const actions: TAction[] = []
     for (const [key, allowed] of Object.entries(this._permissions)) {
       if (!allowed) continue
-      const parts = key.split(':')
-      if (parts[1] === resource && parts[0]) {
-        actions.push(parts[0])
-      }
+      const action = extractAction(key, resource)
+      if (action) actions.push(action as TAction)
     }
     return [...new Set(actions)]
   }
 
   /** Check if the user has any permission on a resource */
-  hasAnyOn(resource: string): boolean {
-    return Object.entries(this._permissions).some(([key, allowed]) => allowed && key.split(':')[1] === resource)
+  hasAnyOn(resource: TResource): boolean {
+    return Object.entries(this._permissions).some(([key, allowed]) => {
+      if (!allowed) return false
+      return extractAction(key, resource) !== null
+    })
+  }
+}
+
+/**
+ * Extract the action from a permission key for a given resource.
+ *
+ * Key formats (from buildPermissionKey):
+ *   "action:resource"
+ *   "action:resource:resourceId"
+ *   "scope:action:resource"
+ *   "scope:action:resource:resourceId"
+ *
+ * Rather than guessing the format from part count (ambiguous for 3 parts),
+ * we check if the resource appears at the expected position for each format.
+ */
+function extractAction(key: string, resource: string): string | null {
+  const parts = key.split(':')
+
+  switch (parts.length) {
+    case 2:
+      // action:resource
+      if (parts[1] === resource) return parts[0]!
+      return null
+    case 3:
+      // Could be action:resource:resourceId OR scope:action:resource
+      // Check both: resource at index 1 (unscoped) or index 2 (scoped)
+      if (parts[1] === resource) return parts[0]!
+      if (parts[2] === resource) return parts[1]!
+      return null
+    case 4:
+      // scope:action:resource:resourceId
+      if (parts[2] === resource) return parts[1]!
+      return null
+    default:
+      return null
   }
 }
