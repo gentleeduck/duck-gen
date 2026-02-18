@@ -1,4 +1,4 @@
-# Contributing to @duck-gen
+# Contributing to access-engine
 
 First off, thank you for considering contributing to **Gentleduck**!
 We welcome all kinds of contributions — from bug reports and documentation improvements to feature requests and new packages.
@@ -20,7 +20,7 @@ Please treat everyone with respect and kindness.
 
 ```bash
 git clone https://github.com/gentleeduck/duck-ui.git
-cd duck-gen
+cd duck-ui
 ```
 
 ### 2. Install Dependencies

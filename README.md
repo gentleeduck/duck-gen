@@ -1,42 +1,52 @@
-<p align="center">
-  <img src="./apps/duck-gen-docs/public/og/root.png" alt="Duck Gen Logo" width="800"/>
-</p>
+# access-engine
 
-# @duck-gen
+Modern ABAC/RBAC access control engine for TypeScript. Framework-agnostic core with integrations for Express, NestJS, Hono, Next.js, React, and Vue.
 
-`@duck-gen` is the GentleDuck monorepo for Duck Gen, Duck Query, and related developer tooling.
-Published package scope remains `@gentleduck/*`.
- 
 ## Documentation
-- Website: https://gen.gentleduck.org
 - GitHub: https://github.com/gentleeduck/duck-ui
 
 ## What's in the repo
-### App
-- `apps/duck-gen-docs` – Duck Gen docs site
 
 ### Packages
-- `packages/duck-gen` – `@gentleduck/gen` type-safe API/message generator
-- `packages/duck-query` – `@gentleduck/query` type-safe Axios client
-- `packages/duck-ttest` – `@gentleduck/ttest` type-level testing utilities
-- `packages/duck-skitch` – internal package
-- `packages/sandbox-server` – internal sandbox server
+- `packages/duck-iam` — `access-engine` core library (RBAC + ABAC + hybrid)
+- `packages/example-shared` — shared access config, types, and DB schema for examples
+- `packages/example-api` — NestJS backend example with typed `@Authorize()` decorators
+- `packages/example-app` — Next.js frontend example with `<Can>` / `useAccess()` components
 
-### Published packages
-- `@gentleduck/gen` – type-safe API and message generator (NestJS-tested)
-- `@gentleduck/query` – type-safe Axios client
-- `@gentleduck/ttest` – compile-time type testing utilities
+### Apps
+- `apps/duck-iam-docs` — documentation site
+
+## Features
+- Type-safe RBAC with role inheritance
+- Attribute-based access control (ABAC) with 17 condition operators
+- Hybrid RBAC + ABAC in a single evaluation pipeline
+- Hierarchical resources via dot-notation (`dashboard.users.settings`)
+- Scoped permissions (`system`, `tenant`)
+- 4 combining algorithms: deny-overrides, allow-overrides, first-match, highest-priority
+- Adapters: Memory, Prisma, Drizzle, HTTP
+- Server integrations: Express, NestJS, Hono, Next.js
+- Client libraries: React, Vue, vanilla JS
+- Compile-time type checking for actions, resources, scopes, and roles
 
 ## Getting Started
 ```bash
 git clone https://github.com/gentleeduck/duck-ui.git
-cd duck-gen
+cd duck-ui
 bun install
 ```
 
-## Run docs locally
+## Build
 ```bash
-bun run --filter @gentleduck/gen-docs dev
+bun run build
+```
+
+## Run examples
+```bash
+# Start the NestJS API
+cd packages/example-api && bun run start:dev
+
+# Start the Next.js app
+cd packages/example-app && bun run dev
 ```
 
 ## Contributing
