@@ -60,10 +60,10 @@ This will spin up local development environments for the packages and docs.
 1. **Branching**
 
    * Create a new branch from `main`.
-   * Use a descriptive name, e.g. `fix/button-hover`, `feat/new-dialog`, `docs/readme-update`.
+   * Use a descriptive name, e.g. `fix/gen-output`, `feat/new-generator`, `docs/readme-update`.
 
    ```bash
-   git checkout -b feat/new-component
+   git checkout -b feat/new-generator
    ```
 
 2. **Coding Standards**
@@ -77,8 +77,8 @@ This will spin up local development environments for the packages and docs.
    Also make sure that you pass the `Husky` checks.
 
    ```
-   feat: add new dropdown menu component
-   fix: resolve button focus issue in Safari
+   feat: add new generator for express routes
+   fix: resolve schema validation edge case
    docs: update contributing guide
    ```
 
@@ -98,7 +98,7 @@ This will spin up local development environments for the packages and docs.
 1. Push your branch:
 
    ```bash
-   git push origin feat/new-component
+   git push origin feat/new-generator
    ```
 
 2. Open a Pull Request (PR) against the `main` branch.
@@ -107,7 +107,7 @@ This will spin up local development environments for the packages and docs.
 
    * A clear description of your changes
    * Any related issues (`Closes #123`)
-   * Screenshots or code samples (if UI related)
+   * Code samples or terminal output (if relevant)
 
 ---
 
@@ -126,7 +126,6 @@ If you find a bug, please [open an issue](https://github.com/gentleeduck/duck-ge
 
 * **Code**: Bug fixes, features, optimizations
 * **Docs**: Tutorials, guides, API references
-* **Design**: Improving UX, accessibility, component design
 * **Community**: Helping others in discussions, writing blog posts, or sharing Gentleduck
 
 ---

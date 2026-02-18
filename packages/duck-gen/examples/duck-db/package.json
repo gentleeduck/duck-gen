@@ -10,7 +10,6 @@
     "uuidv7": "^1.1.0"
   },
   "devDependencies": {
-    "@gentleduck/typescript-config": "workspace:*",
     "@types/node": "^25.0.8",
     "@types/pg": "^8.16.0",
     "drizzle-kit": "^0.31.7",

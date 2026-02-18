@@ -29,14 +29,13 @@ type TrimLength<T extends string> = TrimmedSplit<T, '|>'>['length']
 type Base = 'uuid' | 'varchar(255)' | 'text' | `enum("${string}")` | 'number' | 'timestamp'
 type Modifier = 'pk' | 'unique' | 'default' | `default(${string})`
 
-type ValueT<TString extends string> =
-  TrimLength<TString> extends 1
-    ? `${Base}`
-    : TrimLength<TString> extends 2
-      ? `${Base} |> ${RemoveDuplication<Modifier, CheckDuplication<TString>>}`
-      : TrimLength<TString> extends 3
-        ? `${Base} |> ${RemoveDuplication<Modifier, CheckDuplication<TString>>} |> ${RemoveDuplication<Modifier, CheckDuplication<TString>>}`
-        : never
+type ValueT<TString extends string> = TrimLength<TString> extends 1
+  ? `${Base}`
+  : TrimLength<TString> extends 2
+    ? `${Base} |> ${RemoveDuplication<Modifier, CheckDuplication<TString>>}`
+    : TrimLength<TString> extends 3
+      ? `${Base} |> ${RemoveDuplication<Modifier, CheckDuplication<TString>>} |> ${RemoveDuplication<Modifier, CheckDuplication<TString>>}`
+      : never
 
 type CheckDuplication<TString extends string> = TString extends `${infer _} |> ${infer M1} |> ${infer M2}`
   ? M1 extends M2

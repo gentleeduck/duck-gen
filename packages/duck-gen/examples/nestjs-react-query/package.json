@@ -8,6 +8,6 @@
     "dev": "bun run --filter @gentleduck/duck-gen-example-server dev"
   },
   "devDependencies": {
-    "@gentleduck/gen": "workspace:*"
+    "@gentleduck/gen": "^0.2.7"
   }
 }
