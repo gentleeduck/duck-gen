@@ -84,7 +84,7 @@ export class AccessClient {
     for (const [key, allowed] of Object.entries(this._permissions)) {
       if (!allowed) continue
       const parts = key.split(':')
-      if (parts[1] === resource) {
+      if (parts[1] === resource && parts[0]) {
         actions.push(parts[0])
       }
     }

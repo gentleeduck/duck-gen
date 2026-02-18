@@ -34,8 +34,7 @@ export function rolesToPolicy(roles: Role[]): Policy {
   for (const role of roles) {
     const allPerms = collectPermissions(role.id, rolesMap)
 
-    for (let i = 0; i < allPerms.length; i++) {
-      const perm = allPerms[i]
+    for (const [i, perm] of allPerms.entries()) {
       const baseConditions = [{ field: 'subject.roles', operator: 'contains' as const, value: role.id }]
 
       const conditions = perm.conditions

@@ -85,8 +85,8 @@ const combiners: Record<CombiningAlgorithm, Combiner> = {
   },
 
   'first-match': (matched, defaultEffect) => {
-    if (matched.length > 0) {
-      const first = matched[0]
+    const first = matched[0]
+    if (first) {
       return {
         rule: first.rule,
         effect: first.effect,
@@ -99,7 +99,7 @@ const combiners: Record<CombiningAlgorithm, Combiner> = {
   'highest-priority': (matched, defaultEffect) => {
     if (matched.length > 0) {
       const sorted = [...matched].sort((a, b) => b.rule.priority - a.rule.priority)
-      const top = sorted[0]
+      const top = sorted[0]!
       return {
         rule: top.rule,
         effect: top.effect,

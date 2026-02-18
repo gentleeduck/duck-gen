@@ -36,7 +36,7 @@ export function createVueAccess(vue: { ref: any; computed: any; inject: any; pro
   const { ref, computed, inject, provide } = vue
 
   function createAccessState(initialPermissions: PermissionMap) {
-    const permissions = ref<PermissionMap>(initialPermissions)
+    const permissions = ref(initialPermissions as PermissionMap)
 
     const can = (action: string, resource: string, resourceId?: string): boolean => {
       const key = resourceId ? `${action}:${resource}:${resourceId}` : `${action}:${resource}`

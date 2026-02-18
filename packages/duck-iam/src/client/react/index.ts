@@ -57,16 +57,16 @@ export interface AccessContextValue {
 export function createAccessControl(React: any) {
   const { createContext, useContext, useMemo, useCallback } = React
 
-  const AccessContext = createContext<AccessContextValue>({
+  const AccessContext = createContext({
     permissions: {},
     can: () => false,
     cannot: () => true,
-  })
+  } as AccessContextValue)
 
   // ── Provider ──
 
   function AccessProvider({ permissions, children }: { permissions: PermissionMap; children: any }) {
-    const value = useMemo<AccessContextValue>(() => {
+    const value = useMemo(() => {
       const can = (action: string, resource: string, resourceId?: string): boolean => {
         const key = resourceId ? `${action}:${resource}:${resourceId}` : `${action}:${resource}`
         return permissions[key] ?? false
@@ -125,9 +125,9 @@ export function createAccessControl(React: any) {
   // ── Utility hook: fetch permissions from server ──
 
   function usePermissions(fetchFn: () => Promise<PermissionMap>, deps: any[] = []) {
-    const [permissions, setPermissions] = React.useState<PermissionMap>({})
+    const [permissions, setPermissions] = React.useState({} as PermissionMap)
     const [loading, setLoading] = React.useState(true)
-    const [error, setError] = React.useState<Error | null>(null)
+    const [error, setError] = React.useState(null as Error | null)
 
     React.useEffect(() => {
       let cancelled = false

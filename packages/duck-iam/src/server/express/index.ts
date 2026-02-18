@@ -135,12 +135,12 @@ export function adminRouter(engine: Engine): any {
     })
 
     router.post('/subjects/:id/roles', async (req: Req, res: Res) => {
-      await engine.admin.assignRole(req.params!.id, req.body.roleId, req.body.scope)
+      await engine.admin.assignRole(req.params!.id as string, req.body.roleId, req.body.scope)
       res.json({ ok: true })
     })
 
     router.delete('/subjects/:id/roles/:roleId', async (req: Req, res: Res) => {
-      await engine.admin.revokeRole(req.params!.id, req.params!.roleId)
+      await engine.admin.revokeRole(req.params!.id as string, req.params!.roleId as string)
       res.json({ ok: true })
     })
 

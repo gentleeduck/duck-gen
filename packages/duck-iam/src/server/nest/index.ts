@@ -2,6 +2,12 @@ import type { Engine } from '../../core/engine'
 import type { Environment, Resource } from '../../core/types'
 import { extractEnvironment, METHOD_ACTION_MAP } from '../generic'
 
+// Reflect.defineMetadata/getMetadata come from reflect-metadata (used by NestJS)
+declare namespace Reflect {
+  function defineMetadata(key: string, value: unknown, target: object): void
+  function getMetadata(key: string, target: object): unknown
+}
+
 /**
  * NestJS integration for access-engine.
  *

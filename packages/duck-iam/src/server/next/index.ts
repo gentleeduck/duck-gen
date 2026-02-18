@@ -48,8 +48,8 @@ export function withAccess(
   const {
     getUserId = (req) => req.headers.get('x-user-id'),
     getEnvironment = (req) => ({
-      ip: req.headers.get('x-forwarded-for'),
-      userAgent: req.headers.get('user-agent'),
+      ip: req.headers.get('x-forwarded-for') ?? undefined,
+      userAgent: req.headers.get('user-agent') ?? undefined,
       timestamp: Date.now(),
     }),
   } = opts
