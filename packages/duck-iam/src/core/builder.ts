@@ -12,11 +12,16 @@ import type {
   Rule,
 } from './types'
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ------------------------------------------------------------
 // Condition builder with AND/OR/NONE nesting
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ------------------------------------------------------------
 
-export class When {
+export class When<
+  TAction extends string = string,
+  TResource extends string = string,
+  TRole extends string = string,
+  TScope extends string = string,
+> {
   private items: Array<Condition | ConditionGroup> = []
 
   /** Raw condition */
@@ -25,7 +30,7 @@ export class When {
     return this
   }
 
-  // ── Shorthand conditions ──
+  // -- Shorthand conditions --
 
   eq(field: string, value: AttributeValue): this {
     return this.check(field, 'eq', value)
@@ -67,14 +72,24 @@ export class When {
     return this.check(field, 'matches', regex)
   }
 
-  // ── Semantic shortcuts ──
+  // -- Semantic shortcuts --
 
-  role(roleId: string): this {
+  role(roleId: TRole): this {
     return this.contains('subject.roles', roleId)
   }
 
-  roles(...roleIds: string[]): this {
-    return this.check('subject.roles', 'in', roleIds)
+  roles(...roleIds: TRole[]): this {
+    return this.check('subject.roles', 'in', roleIds as string[])
+  }
+
+  /** Require a specific scope on the request */
+  scope(id: TScope): this {
+    return this.check('scope', 'eq', id)
+  }
+
+  /** Require one of the given scopes */
+  scopes(...ids: TScope[]): this {
+    return this.check('scope', 'in', ids as string[])
   }
 
   isOwner(ownerField = 'resource.attributes.ownerId'): this {
@@ -84,8 +99,8 @@ export class When {
     return this
   }
 
-  resourceType(...types: string[]): this {
-    return this.check('resource.type', 'in', types)
+  resourceType(...types: (TResource | '*')[]): this {
+    return this.check('resource.type', 'in', types as string[])
   }
 
   attr(path: string, op: Operator, value?: AttributeValue): this {
@@ -100,30 +115,30 @@ export class When {
     return this.check(`environment.${path}`, op, value)
   }
 
-  // ── Nesting ──
+  // -- Nesting --
 
-  and(fn: (w: When) => When): this {
-    const nested = new When()
+  and(fn: (w: When<TAction, TResource, TRole, TScope>) => When<TAction, TResource, TRole, TScope>): this {
+    const nested = new When<TAction, TResource, TRole, TScope>()
     fn(nested)
     this.items.push(nested.buildAll())
     return this
   }
 
-  or(fn: (w: When) => When): this {
-    const nested = new When()
+  or(fn: (w: When<TAction, TResource, TRole, TScope>) => When<TAction, TResource, TRole, TScope>): this {
+    const nested = new When<TAction, TResource, TRole, TScope>()
     fn(nested)
     this.items.push(nested.buildAny())
     return this
   }
 
-  not(fn: (w: When) => When): this {
-    const nested = new When()
+  not(fn: (w: When<TAction, TResource, TRole, TScope>) => When<TAction, TResource, TRole, TScope>): this {
+    const nested = new When<TAction, TResource, TRole, TScope>()
     fn(nested)
     this.items.push(nested.buildNone())
     return this
   }
 
-  // ── Build ──
+  // -- Build --
 
   buildAll(): ConditionGroup {
     return { all: this.items }
@@ -138,17 +153,21 @@ export class When {
   }
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ------------------------------------------------------------
 // Rule builder
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ------------------------------------------------------------
 
-export class RuleBuilder {
+export class RuleBuilder<
+  TAction extends string = string,
+  TResource extends string = string,
+  TScope extends string = string,
+> {
   private _id: string
   private _effect: Effect = 'allow'
   private _description?: string
   private _priority = 10
-  private _actions: string[] = ['*']
-  private _resources: string[] = ['*']
+  private _actions: (TAction | '*')[] = ['*']
+  private _resources: (TResource | '*')[] = ['*']
   private _conditions: ConditionGroup = { all: [] }
   private _metadata?: Attributes
 
@@ -176,25 +195,41 @@ export class RuleBuilder {
     return this
   }
 
-  on(...actions: string[]): this {
+  on(...actions: (TAction | '*')[]): this {
     this._actions = actions
     return this
   }
 
-  of(...resources: string[]): this {
+  of(...resources: (TResource | '*')[]): this {
     this._resources = resources
     return this
   }
 
-  when(fn: (w: When) => When): this {
-    const w = new When()
+  /** Scope conditions are stored separately and merged at build time */
+  private _scopeCondition?: Condition
+
+  /** Restrict this rule to specific scopes */
+  forScope(...scopes: (TScope | '*')[]): this {
+    const nonWild = scopes.filter((s) => s !== '*') as string[]
+    if (nonWild.length === 0) return this
+
+    this._scopeCondition =
+      nonWild.length === 1
+        ? { field: 'scope', operator: 'eq', value: nonWild[0] }
+        : { field: 'scope', operator: 'in', value: nonWild }
+
+    return this
+  }
+
+  when(fn: (w: When<TAction, TResource, string, TScope>) => When<TAction, TResource, string, TScope>): this {
+    const w = new When<TAction, TResource, string, TScope>()
     fn(w)
     this._conditions = w.buildAll()
     return this
   }
 
-  whenAny(fn: (w: When) => When): this {
-    const w = new When()
+  whenAny(fn: (w: When<TAction, TResource, string, TScope>) => When<TAction, TResource, string, TScope>): this {
+    const w = new When<TAction, TResource, string, TScope>()
     fn(w)
     this._conditions = w.buildAny()
     return this
@@ -205,7 +240,14 @@ export class RuleBuilder {
     return this
   }
 
-  build(): Rule {
+  build(): Rule<TAction, TResource> {
+    // Merge scope condition into user conditions so forScope() + when() compose correctly
+    let conditions = this._conditions
+    if (this._scopeCondition) {
+      const existing = 'all' in conditions ? [...conditions.all] : [conditions]
+      conditions = { all: [this._scopeCondition, ...existing] }
+    }
+
     return {
       id: this._id,
       effect: this._effect,
@@ -213,23 +255,28 @@ export class RuleBuilder {
       priority: this._priority,
       actions: this._actions,
       resources: this._resources,
-      conditions: this._conditions,
+      conditions,
       metadata: this._metadata,
     }
   }
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ------------------------------------------------------------
 // Policy builder
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ------------------------------------------------------------
 
-export class PolicyBuilder {
+export class PolicyBuilder<
+  TAction extends string = string,
+  TResource extends string = string,
+  TRole extends string = string,
+  TScope extends string = string,
+> {
   private _id: string
   private _name: string
   private _description?: string
   private _algorithm: CombiningAlgorithm = 'deny-overrides'
-  private _rules: Rule[] = []
-  private _targets?: Policy['targets']
+  private _rules: Rule<TAction, TResource>[] = []
+  private _targets?: Policy<TAction, TResource, TRole>['targets']
   private _version?: number
 
   constructor(id: string) {
@@ -258,24 +305,24 @@ export class PolicyBuilder {
   }
 
   /** Scope this policy to specific actions/resources/roles */
-  target(t: NonNullable<Policy['targets']>): this {
+  target(t: NonNullable<Policy<TAction, TResource, TRole>['targets']>): this {
     this._targets = t
     return this
   }
 
-  rule(id: string, fn: (r: RuleBuilder) => RuleBuilder): this {
-    const builder = new RuleBuilder(id)
+  rule(id: string, fn: (r: RuleBuilder<TAction, TResource, TScope>) => RuleBuilder<TAction, TResource, TScope>): this {
+    const builder = new RuleBuilder<TAction, TResource, TScope>(id)
     fn(builder)
     this._rules.push(builder.build())
     return this
   }
 
-  addRule(rule: Rule): this {
+  addRule(rule: Rule<TAction, TResource>): this {
     this._rules.push(rule)
     return this
   }
 
-  build(): Policy {
+  build(): Policy<TAction, TResource, TRole> {
     return {
       id: this._id,
       name: this._name,
@@ -288,20 +335,25 @@ export class PolicyBuilder {
   }
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ------------------------------------------------------------
 // Role builder
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ------------------------------------------------------------
 
-export class RoleBuilder {
-  private _id: string
+export class RoleBuilder<
+  TAction extends string = string,
+  TResource extends string = string,
+  TId extends string = string,
+  TScope extends string = string,
+> {
+  private _id: TId
   private _name: string
   private _description?: string
-  private _permissions: Permission[] = []
+  private _permissions: Permission<TAction, TResource, TScope>[] = []
   private _inherits: string[] = []
-  private _scope?: string
+  private _scope?: TScope
   private _metadata?: Attributes
 
-  constructor(id: string) {
+  constructor(id: TId) {
     this._id = id
     this._name = id
   }
@@ -321,39 +373,50 @@ export class RoleBuilder {
     return this
   }
 
-  scope(s: string): this {
+  /** Set the default scope for all permissions in this role */
+  scope(s: TScope): this {
     this._scope = s
     return this
   }
 
   /** Grant a permission */
-  grant(action: string, resource: string): this {
+  grant(action: TAction | '*', resource: TResource | '*'): this {
     this._permissions.push({ action, resource })
     return this
   }
 
+  /** Grant a permission within a specific scope */
+  grantScoped(scope: TScope, action: TAction | '*', resource: TResource | '*'): this {
+    this._permissions.push({ action, resource, scope })
+    return this
+  }
+
   /** Grant with conditions */
-  grantWhen(action: string, resource: string, fn: (w: When) => When): this {
-    const w = new When()
+  grantWhen(
+    action: TAction | '*',
+    resource: TResource | '*',
+    fn: (w: When<TAction, TResource, string, TScope>) => When<TAction, TResource, string, TScope>,
+  ): this {
+    const w = new When<TAction, TResource, string, TScope>()
     fn(w)
     this._permissions.push({ action, resource, conditions: w.buildAll() })
     return this
   }
 
   /** Grant all actions on a resource */
-  grantAll(resource: string): this {
+  grantAll(resource: TResource | '*'): this {
     return this.grant('*', resource)
   }
 
   /** Grant read access to resources */
-  grantRead(...resources: string[]): this {
-    for (const r of resources) this.grant('read', r)
+  grantRead(...resources: (TResource | '*')[]): this {
+    for (const r of resources) this.grant('read' as TAction | '*', r)
     return this
   }
 
   /** Grant CRUD on a resource */
-  grantCRUD(resource: string): this {
-    for (const a of ['create', 'read', 'update', 'delete']) {
+  grantCRUD(resource: TResource | '*'): this {
+    for (const a of ['create', 'read', 'update', 'delete'] as (TAction | '*')[]) {
       this.grant(a, resource)
     }
     return this
@@ -364,7 +427,7 @@ export class RoleBuilder {
     return this
   }
 
-  build(): Role {
+  build(): Role<TAction, TResource, TId, TScope> {
     return {
       id: this._id,
       name: this._name,
@@ -377,11 +440,37 @@ export class RoleBuilder {
   }
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ------------------------------------------------------------
 // Factory functions
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ------------------------------------------------------------
 
-export const policy = (id: string) => new PolicyBuilder(id)
-export const defineRole = <const TId extends string>(id: TId) => new RoleBuilder(id)
-export const defineRule = (id: string) => new RuleBuilder(id)
-export const when = () => new When()
+export const policy = <
+  TAction extends string = string,
+  TResource extends string = string,
+  TScope extends string = string,
+>(
+  id: string,
+) => new PolicyBuilder<TAction, TResource, string, TScope>(id)
+
+export const defineRole = <
+  const TId extends string,
+  TAction extends string = string,
+  TResource extends string = string,
+  TScope extends string = string,
+>(
+  id: TId,
+) => new RoleBuilder<TAction, TResource, TId, TScope>(id)
+
+export const defineRule = <
+  TAction extends string = string,
+  TResource extends string = string,
+  TScope extends string = string,
+>(
+  id: string,
+) => new RuleBuilder<TAction, TResource, TScope>(id)
+
+export const when = <
+  TAction extends string = string,
+  TResource extends string = string,
+  TScope extends string = string,
+>() => new When<TAction, TResource, string, TScope>()

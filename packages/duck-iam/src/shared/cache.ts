@@ -31,6 +31,10 @@ export class LRUCache<V> {
     this.map.set(key, { value, expiresAt: Date.now() + this.ttl })
   }
 
+  delete(key: string): boolean {
+    return this.map.delete(key)
+  }
+
   clear(): void {
     this.map.clear()
   }

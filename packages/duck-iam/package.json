@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "access-engine",
+  "name": "duck-iam",
   "version": "1.0.0",
   "description": "Modern ABAC/RBAC access control engine. Framework-agnostic core with integrations for Express, NestJS, Hono, Next.js, React, and Vue.",
   "type": "module",
@@ -183,6 +183,7 @@
     "@gentleduck/tsdown-config": "workspace:*",
     "@gentleduck/typescript-config": "workspace:*",
     "@gentleduck/vitest-config": "workspace:*",
+    "@types/react": "^19.2.14",
     "tsdown": "0.18.3",
     "typescript": "5.9.3",
     "vitest": "^4.0.16"
@@ -192,14 +193,13 @@
   },
   "author": "GentleDuck (https://www.gentleduck.org)",
   "license": "MIT",
-  "homepage": "https://github.com/gentleeduck/duck-ui/tree/master/packages/duck-iam#readme",
+  "homepage": "https://github.com/gentleeduck/duck-iam#readme",
   "bugs": {
-    "url": "https://github.com/gentleeduck/duck-ui/issues"
+    "url": "https://github.com/gentleeduck/duck-iam/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gentleeduck/duck-ui.git",
-    "directory": "packages/duck-iam"
+    "url": "git+https://github.com/gentleeduck/duck-iam.git"
   },
   "keywords": [
     "rbac",

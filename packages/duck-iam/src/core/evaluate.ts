@@ -1,5 +1,5 @@
 import { evalConditionGroup } from './conditions'
-import { matchesAction, matchesResource } from './resolve'
+import { matchesAction, matchesResource, matchesResourceHierarchical } from './resolve'
 import type { AccessRequest, CombiningAlgorithm, Decision, Effect, Policy, Rule } from './types'
 
 // --- Rule matching ---
@@ -8,7 +8,13 @@ function ruleApplies(rule: Rule, req: AccessRequest): boolean {
   const actionMatch = rule.actions.some((a) => matchesAction(a, req.action))
   if (!actionMatch) return false
 
-  const resourceMatch = rule.resources.some((r) => matchesResource(r, req.resource.type))
+  const resourceMatch = rule.resources.some((r) => {
+    // Use dot-based matching if either pattern or resource type contains a dot
+    if (r.includes('.') || req.resource.type.includes('.')) {
+      return matchesResourceHierarchical(r, req.resource.type)
+    }
+    return matchesResource(r, req.resource.type)
+  })
   if (!resourceMatch) return false
 
   return evalConditionGroup(req, rule.conditions)
@@ -61,7 +67,7 @@ const combiners: Record<CombiningAlgorithm, Combiner> = {
         reason: `Allowed by rule "${allow.rule.id}"`,
       }
     }
-    return { effect: defaultEffect, reason: `No matching rules → ${defaultEffect}` }
+    return { effect: defaultEffect, reason: `No matching rules -> ${defaultEffect}` }
   },
 
   'allow-overrides': (matched, defaultEffect) => {
@@ -81,7 +87,7 @@ const combiners: Record<CombiningAlgorithm, Combiner> = {
         reason: `Denied by rule "${deny.rule.id}"`,
       }
     }
-    return { effect: defaultEffect, reason: `No matching rules → ${defaultEffect}` }
+    return { effect: defaultEffect, reason: `No matching rules -> ${defaultEffect}` }
   },
 
   'first-match': (matched, defaultEffect) => {
@@ -93,7 +99,7 @@ const combiners: Record<CombiningAlgorithm, Combiner> = {
         reason: `First match: rule "${first.rule.id}" (${first.effect})`,
       }
     }
-    return { effect: defaultEffect, reason: `No matching rules → ${defaultEffect}` }
+    return { effect: defaultEffect, reason: `No matching rules -> ${defaultEffect}` }
   },
 
   'highest-priority': (matched, defaultEffect) => {
@@ -106,7 +112,7 @@ const combiners: Record<CombiningAlgorithm, Combiner> = {
         reason: `Highest priority: rule "${top.rule.id}" (p=${top.rule.priority})`,
       }
     }
-    return { effect: defaultEffect, reason: `No matching rules → ${defaultEffect}` }
+    return { effect: defaultEffect, reason: `No matching rules -> ${defaultEffect}` }
   },
 }
 
@@ -123,7 +129,7 @@ export function evaluatePolicy(policy: Policy, request: AccessRequest, defaultEf
       allowed: defaultEffect === 'allow',
       effect: defaultEffect,
       policy: policy.id,
-      reason: `Policy "${policy.id}" targets don't match → ${defaultEffect}`,
+      reason: `Policy "${policy.id}" targets don't match -> ${defaultEffect}`,
       duration: performance.now() - start,
       timestamp: Date.now(),
     }

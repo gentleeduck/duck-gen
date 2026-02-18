@@ -5,6 +5,30 @@ import type { AccessRequest, AttributeValue, Condition, ConditionGroup, Operator
 
 type OpFn = (field: AttributeValue, value: AttributeValue) => boolean
 
+/** Max allowed regex pattern length to mitigate ReDoS */
+const MAX_REGEX_LENGTH = 512
+
+/** LRU cache for compiled regex patterns to avoid recompilation on every evaluation */
+const REGEX_CACHE_MAX = 256
+const regexCache = new Map<string, RegExp>()
+
+function getCachedRegex(pattern: string): RegExp | null {
+  const cached = regexCache.get(pattern)
+  if (cached) return cached
+  try {
+    const re = new RegExp(pattern)
+    if (regexCache.size >= REGEX_CACHE_MAX) {
+      // Evict oldest entry
+      const first = regexCache.keys().next().value
+      if (first !== undefined) regexCache.delete(first)
+    }
+    regexCache.set(pattern, re)
+    return re
+  } catch {
+    return null
+  }
+}
+
 const ops: Record<Operator, OpFn> = {
   eq: (f, v) => f === v,
   neq: (f, v) => f !== v,
@@ -16,13 +40,13 @@ const ops: Record<Operator, OpFn> = {
 
   in: (f, v) => {
     if (!Array.isArray(v)) return false
-    if (Array.isArray(f)) return f.some((i) => (v as Scalar[]).includes(i))
-    return (v as Scalar[]).includes(f as Scalar)
+    if (Array.isArray(f)) return f.some((i) => v.includes(i))
+    return v.includes(f as Scalar)
   },
   nin: (f, v) => {
     if (!Array.isArray(v)) return true
-    if (Array.isArray(f)) return !f.some((i) => (v as Scalar[]).includes(i))
-    return !(v as Scalar[]).includes(f as Scalar)
+    if (Array.isArray(f)) return !f.some((i) => v.includes(i))
+    return !v.includes(f as Scalar)
   },
 
   contains: (f, v) => {
@@ -41,11 +65,9 @@ const ops: Record<Operator, OpFn> = {
 
   matches: (f, v) => {
     if (typeof f !== 'string' || typeof v !== 'string') return false
-    try {
-      return new RegExp(v).test(f)
-    } catch {
-      return false
-    }
+    if (v.length > MAX_REGEX_LENGTH) return false
+    const re = getCachedRegex(v)
+    return re ? re.test(f) : false
   },
 
   exists: (f) => f !== null && f !== undefined,
@@ -53,39 +75,69 @@ const ops: Record<Operator, OpFn> = {
 
   subset_of: (f, v) => {
     if (!Array.isArray(f) || !Array.isArray(v)) return false
-    return f.every((i) => (v as Scalar[]).includes(i))
+    return f.every((i) => v.includes(i))
   },
   superset_of: (f, v) => {
     if (!Array.isArray(f) || !Array.isArray(v)) return false
-    return (v as Scalar[]).every((i) => f.includes(i))
+    return v.every((i) => f.includes(i))
   },
 }
 
 // --- Condition evaluation ---
 
-function evalCondition(req: AccessRequest, cond: Condition): boolean {
-  const fieldVal = resolve(req, cond.field)
-  return ops[cond.operator](fieldVal, cond.value ?? null)
+/** Maximum nesting depth for condition groups to prevent stack overflow */
+const MAX_CONDITION_DEPTH = 10
+
+function isCondition(item: Condition | ConditionGroup): item is Condition {
+  return 'field' in item
 }
 
-export function evalConditionGroup(req: AccessRequest, group: ConditionGroup): boolean {
+/**
+ * Resolve a condition value, handling `$`-prefixed variable references.
+ * e.g. `$subject.id` resolves to the request's subject.id at eval time.
+ */
+function resolveValue(req: AccessRequest, value: AttributeValue): AttributeValue {
+  if (typeof value === 'string' && value.startsWith('$')) {
+    return resolve(req, value.slice(1))
+  }
+  return value
+}
+
+function evalCondition(req: AccessRequest, cond: Condition): boolean {
+  const fieldVal = resolve(req, cond.field)
+  const condVal = resolveValue(req, cond.value ?? null)
+  return ops[cond.operator](fieldVal, condVal)
+}
+
+function evalItem(req: AccessRequest, item: Condition | ConditionGroup, depth: number): boolean {
+  return isCondition(item) ? evalCondition(req, item) : evalConditionGroup(req, item, depth)
+}
+
+/** Evaluate a single operator. Exposed for explain/trace functionality. */
+export function evaluateOperator(op: Operator, fieldValue: AttributeValue, condValue: AttributeValue): boolean {
+  return ops[op](fieldValue, condValue)
+}
+
+/** Resolve $-variable references in condition values against a request. */
+export function resolveConditionValue(req: AccessRequest, value: AttributeValue): AttributeValue {
+  return resolveValue(req, value)
+}
+
+export function evalConditionGroup(req: AccessRequest, group: ConditionGroup, depth = 0): boolean {
+  if (depth >= MAX_CONDITION_DEPTH) {
+    return false // Deny when nesting is too deep -- fail closed
+  }
+
   if ('all' in group) {
-    return group.all.every((item) =>
-      'field' in item ? evalCondition(req, item as Condition) : evalConditionGroup(req, item as ConditionGroup),
-    )
+    return group.all.every((item) => evalItem(req, item, depth + 1))
   }
 
   if ('any' in group) {
-    return group.any.some((item) =>
-      'field' in item ? evalCondition(req, item as Condition) : evalConditionGroup(req, item as ConditionGroup),
-    )
+    return group.any.some((item) => evalItem(req, item, depth + 1))
   }
 
   if ('none' in group) {
-    return group.none.every(
-      (item) =>
-        !('field' in item ? evalCondition(req, item as Condition) : evalConditionGroup(req, item as ConditionGroup)),
-    )
+    return group.none.every((item) => !evalItem(req, item, depth + 1))
   }
 
   return false

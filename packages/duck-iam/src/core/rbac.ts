@@ -1,4 +1,4 @@
-import type { Policy, Role, Rule } from './types'
+import type { Condition, ConditionGroup, Policy, Role, Rule } from './types'
 
 /**
  * Flatten role inheritance, returning all permissions including inherited ones.
@@ -35,7 +35,15 @@ export function rolesToPolicy(roles: Role[]): Policy {
     const allPerms = collectPermissions(role.id, rolesMap)
 
     for (const [i, perm] of allPerms.entries()) {
-      const baseConditions = [{ field: 'subject.roles', operator: 'contains' as const, value: role.id }]
+      const baseConditions: (Condition | ConditionGroup)[] = [
+        { field: 'subject.roles', operator: 'contains' as const, value: role.id },
+      ]
+
+      // Add scope condition if permission or role has a scope
+      const effectiveScope = perm.scope ?? role.scope
+      if (effectiveScope && effectiveScope !== '*') {
+        baseConditions.push({ field: 'scope', operator: 'eq' as const, value: effectiveScope })
+      }
 
       const conditions = perm.conditions
         ? {

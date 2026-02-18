@@ -1,10 +1,11 @@
-// Core (always available)
+// -- Config factory --
 
+// -- Memory adapter (included in root for convenience) --
 export type { MemoryAdapterInit } from './adapters/memory'
-// Adapters
 export { MemoryAdapter } from './adapters/memory'
-// Types
 export type {
+  AccessConfig,
+  AccessConfigInput,
   AccessRequest,
   Adapter,
   Attributes,
@@ -12,11 +13,19 @@ export type {
   CombiningAlgorithm,
   Condition,
   ConditionGroup,
+  ConditionGroupTrace,
+  ConditionLeafTrace,
+  ConditionTrace,
   Decision,
   Effect,
   EngineConfig,
   EngineHooks,
   Environment,
+  ExplainResult,
+  ExplainSubjectInfo,
+  InferAction,
+  InferResource,
+  InferScope,
   Operator,
   Permission,
   PermissionCheck,
@@ -24,30 +33,46 @@ export type {
   PermissionMap,
   Policy,
   PolicyStore,
+  PolicyTrace,
   Resource,
   Role,
   RoleStore,
   Rule,
+  RuleTrace,
   Scalar,
+  ScopedRole,
   Subject,
   SubjectStore,
+  ValidationIssue,
+  ValidationResult,
 } from './core'
+// -- Engine --
+// -- Builders --
+// -- Low-level (advanced usage) --
 export {
+  createAccessConfig,
   defineRole,
   defineRule,
   Engine,
   evalConditionGroup,
   evaluate,
+  evaluateOperator,
   evaluatePolicy,
+  explainEvaluation,
   matchesAction,
   matchesResource,
+  matchesResourceHierarchical,
+  matchesScope,
   PolicyBuilder,
   policy,
   RoleBuilder,
   RuleBuilder,
   resolve,
+  resolveConditionValue,
   resolveEffectiveRoles,
   rolesToPolicy,
+  validatePolicy,
+  validateRoles,
   When,
   when,
 } from './core'

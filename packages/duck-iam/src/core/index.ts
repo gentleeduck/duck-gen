@@ -1,10 +1,21 @@
 export { defineRole, defineRule, PolicyBuilder, policy, RoleBuilder, RuleBuilder, When, when } from './builder'
-export { evalConditionGroup } from './conditions'
+export { evalConditionGroup, evaluateOperator, resolveConditionValue } from './conditions'
+export type { AccessConfig, AccessConfigInput } from './config'
+export { createAccessConfig } from './config'
 export { Engine } from './engine'
 export { evaluate, evaluatePolicy } from './evaluate'
+export type {
+  ConditionGroupTrace,
+  ConditionLeafTrace,
+  ConditionTrace,
+  ExplainResult,
+  ExplainSubjectInfo,
+  PolicyTrace,
+  RuleTrace,
+} from './explain'
+export { explainEvaluation } from './explain'
 export { resolveEffectiveRoles, rolesToPolicy } from './rbac'
-export { matchesAction, matchesResource, resolve } from './resolve'
-
+export { matchesAction, matchesResource, matchesResourceHierarchical, matchesScope, resolve } from './resolve'
 export type {
   AccessRequest,
   Adapter,
@@ -18,6 +29,9 @@ export type {
   EngineConfig,
   EngineHooks,
   Environment,
+  InferAction,
+  InferResource,
+  InferScope,
   Operator,
   Permission,
   PermissionCheck,
@@ -30,6 +44,9 @@ export type {
   RoleStore,
   Rule,
   Scalar,
+  ScopedRole,
   Subject,
   SubjectStore,
 } from './types'
+export type { ValidationIssue, ValidationResult } from './validate'
+export { validatePolicy, validateRoles } from './validate'
