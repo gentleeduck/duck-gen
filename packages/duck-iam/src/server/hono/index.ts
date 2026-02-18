@@ -2,24 +2,7 @@ import type { Engine } from '../../core/engine'
 import type { Environment, Resource } from '../../core/types'
 import { METHOD_ACTION_MAP } from '../generic'
 
-/**
- * Hono integration for access-engine.
- * Works with Cloudflare Workers, Deno, Bun, and Node.js.
- *
- * Usage:
- *   import { Hono } from "hono";
- *   import { accessMiddleware, guard } from "access-engine/server/hono";
- *
- *   const app = new Hono();
- *
- *   // Global
- *   app.use("*", accessMiddleware(engine, { getUserId: (c) => c.get("userId") }));
- *
- *   // Per-route
- *   app.delete("/posts/:id", guard(engine, "delete", "post"), (c) => { ... });
- */
-
-// Minimal Hono-compatible types
+// Minimal Hono-compatible types -- no hard dependency on hono
 interface HonoContext {
   req: {
     method: string
@@ -28,20 +11,22 @@ interface HonoContext {
     header(name: string): string | undefined
     param(name: string): string | undefined
   }
-  get(key: string): any
-  set(key: string, value: any): void
-  json(data: any, status?: number): Response
+  get(key: string): unknown
+  set(key: string, value: unknown): void
+  json(data: unknown, status?: number): Response
   text(data: string, status?: number): Response
 }
 type HonoNext = () => Promise<void>
 type HonoMiddleware = (c: HonoContext, next: HonoNext) => Promise<Response | void>
 
-export interface HonoOptions {
+export interface HonoOptions<TScope extends string = string> {
   getUserId?: (c: HonoContext) => string | null
   getResource?: (c: HonoContext) => Resource
   getAction?: (c: HonoContext) => string
   getEnvironment?: (c: HonoContext) => Environment
+  getScope?: (c: HonoContext) => TScope | undefined
   onDenied?: (c: HonoContext) => Response
+  onError?: (err: Error, c: HonoContext) => Response
 }
 
 function defaultEnv(c: HonoContext): Environment {
@@ -55,26 +40,43 @@ function defaultEnv(c: HonoContext): Environment {
 /**
  * Global middleware for Hono.
  */
-export function accessMiddleware(engine: Engine, opts: HonoOptions = {}): HonoMiddleware {
+export function accessMiddleware<
+  TAction extends string = string,
+  TResource extends string = string,
+  TRole extends string = string,
+  TScope extends string = string,
+>(engine: Engine<TAction, TResource, TRole, TScope>, opts: HonoOptions<TScope> = {}): HonoMiddleware {
   const {
-    getUserId = (c) => c.get('userId') ?? c.req.header('x-user-id'),
+    getUserId = (c) => (c.get('userId') as string | undefined) ?? c.req.header('x-user-id') ?? null,
     getResource = (c) => {
       const parts = c.req.path.split('/').filter(Boolean)
       return { type: parts[0] ?? 'root', id: parts[1], attributes: {} }
     },
     getAction = (c) => METHOD_ACTION_MAP[c.req.method] ?? 'read',
     getEnvironment = defaultEnv,
+    getScope,
     onDenied = (c) => c.json({ error: 'Forbidden' }, 403),
+    onError = (_err, c) => c.json({ error: 'Internal server error' }, 500),
   } = opts
 
   return async (c, next) => {
     const userId = getUserId(c)
     if (!userId) return c.json({ error: 'Unauthorized' }, 401)
 
-    const allowed = await engine.can(userId, getAction(c), getResource(c), getEnvironment(c))
+    try {
+      const allowed = await engine.can(
+        userId,
+        getAction(c) as TAction,
+        getResource(c) as Resource<TResource>,
+        getEnvironment(c),
+        getScope?.(c),
+      )
 
-    if (!allowed) return onDenied(c)
-    await next()
+      if (!allowed) return onDenied(c)
+      await next()
+    } catch (err) {
+      return onError(err as Error, c)
+    }
   }
 }
 
@@ -82,31 +84,44 @@ export function accessMiddleware(engine: Engine, opts: HonoOptions = {}): HonoMi
  * Per-route guard for Hono.
  *
  *   app.delete("/posts/:id", guard(engine, "delete", "post"), handler);
+ *   app.post("/admin/users", guard(engine, "manage", "user", { scope: "admin" }), handler);
  */
-export function guard(
-  engine: Engine,
-  action: string,
-  resourceType: string,
-  opts: Pick<HonoOptions, 'getUserId' | 'getEnvironment' | 'onDenied'> = {},
+export function guard<
+  TAction extends string = string,
+  TResource extends string = string,
+  TRole extends string = string,
+  TScope extends string = string,
+>(
+  engine: Engine<TAction, TResource, TRole, TScope>,
+  action: TAction,
+  resourceType: TResource,
+  opts: Pick<HonoOptions<TScope>, 'getUserId' | 'getEnvironment' | 'onDenied' | 'onError'> & { scope?: TScope } = {},
 ): HonoMiddleware {
   const {
-    getUserId = (c) => c.get('userId') ?? c.req.header('x-user-id'),
+    getUserId = (c) => (c.get('userId') as string | undefined) ?? c.req.header('x-user-id') ?? null,
     getEnvironment = defaultEnv,
     onDenied = (c) => c.json({ error: 'Forbidden' }, 403),
+    onError = (_err, c) => c.json({ error: 'Internal server error' }, 500),
+    scope,
   } = opts
 
   return async (c, next) => {
     const userId = getUserId(c)
     if (!userId) return c.json({ error: 'Unauthorized' }, 401)
 
-    const allowed = await engine.can(
-      userId,
-      action,
-      { type: resourceType, id: c.req.param('id'), attributes: {} },
-      getEnvironment(c),
-    )
+    try {
+      const allowed = await engine.can(
+        userId,
+        action,
+        { type: resourceType, id: c.req.param('id'), attributes: {} },
+        getEnvironment(c),
+        scope,
+      )
 
-    if (!allowed) return onDenied(c)
-    await next()
+      if (!allowed) return onDenied(c)
+      await next()
+    } catch (err) {
+      return onError(err as Error, c)
+    }
   }
 }

@@ -1,8 +1,8 @@
 import type { Engine } from '../../core/engine'
-import type { Environment, Resource } from '../../core/types'
+import type { Environment, Policy, Resource, Role } from '../../core/types'
 import { extractEnvironment, METHOD_ACTION_MAP } from '../generic'
 
-// Minimal Express types to avoid hard dependency
+// Minimal Express types -- no hard dependency on express
 interface Req {
   method?: string
   path?: string
@@ -10,21 +10,30 @@ interface Req {
   ip?: string
   params?: Record<string, string>
   headers?: Record<string, string | string[] | undefined>
-  user?: { id: string; [k: string]: any }
-  [k: string]: any
+  body?: unknown
+  user?: { id: string; [k: string]: unknown }
+  [k: string]: unknown
 }
 interface Res {
   status(code: number): Res
-  json(body: any): void
+  json(body: unknown): void
 }
-type Next = (err?: any) => void
+type Next = (err?: unknown) => void
 type Middleware = (req: Req, res: Res, next: Next) => void
 
-export interface ExpressOptions {
+interface ExpressRouterLike {
+  get(path: string, handler: (req: Req, res: Res) => void | Promise<void>): void
+  put(path: string, handler: (req: Req, res: Res) => void | Promise<void>): void
+  post(path: string, handler: (req: Req, res: Res) => void | Promise<void>): void
+  delete(path: string, handler: (req: Req, res: Res) => void | Promise<void>): void
+}
+
+export interface ExpressOptions<TScope extends string = string> {
   getUserId?: (req: Req) => string | null
   getResource?: (req: Req) => Resource
   getAction?: (req: Req) => string
   getEnvironment?: (req: Req) => Environment
+  getScope?: (req: Req) => TScope | undefined
   onDenied?: (req: Req, res: Res) => void
   onError?: (err: Error, req: Req, res: Res, next: Next) => void
 }
@@ -36,7 +45,12 @@ export interface ExpressOptions {
  *     getUserId: (req) => req.user?.id,
  *   }));
  */
-export function accessMiddleware(engine: Engine, opts: ExpressOptions = {}): Middleware {
+export function accessMiddleware<
+  TAction extends string = string,
+  TResource extends string = string,
+  TRole extends string = string,
+  TScope extends string = string,
+>(engine: Engine<TAction, TResource, TRole, TScope>, opts: ExpressOptions<TScope> = {}): Middleware {
   const {
     getUserId = (req) => req.user?.id ?? null,
     getResource = (req) => {
@@ -45,6 +59,7 @@ export function accessMiddleware(engine: Engine, opts: ExpressOptions = {}): Mid
     },
     getAction = (req) => METHOD_ACTION_MAP[req.method ?? 'GET'] ?? 'read',
     getEnvironment = extractEnvironment,
+    getScope,
     onDenied = (_, res) => res.status(403).json({ error: 'Forbidden' }),
     onError = (err, _, res) => res.status(500).json({ error: 'Internal server error' }),
   } = opts
@@ -57,7 +72,13 @@ export function accessMiddleware(engine: Engine, opts: ExpressOptions = {}): Mid
     }
 
     try {
-      const allowed = await engine.can(userId, getAction(req), getResource(req), getEnvironment(req))
+      const allowed = await engine.can(
+        userId,
+        getAction(req) as TAction,
+        getResource(req) as Resource<TResource>,
+        getEnvironment(req),
+        getScope?.(req),
+      )
       allowed ? next() : onDenied(req, res)
     } catch (err) {
       onError(err as Error, req, res, next)
@@ -69,18 +90,24 @@ export function accessMiddleware(engine: Engine, opts: ExpressOptions = {}): Mid
  * Per-route guard.
  *
  *   app.delete("/posts/:id", guard(engine, "delete", "post"), handler);
- *   app.post("/admin/users", guard(engine, "manage", "user"), handler);
+ *   app.post("/admin/users", guard(engine, "manage", "user", { scope: "admin" }), handler);
  */
-export function guard(
-  engine: Engine,
-  action: string,
-  resourceType: string,
-  opts: Pick<ExpressOptions, 'getUserId' | 'getEnvironment' | 'onDenied'> = {},
+export function guard<
+  TAction extends string = string,
+  TResource extends string = string,
+  TRole extends string = string,
+  TScope extends string = string,
+>(
+  engine: Engine<TAction, TResource, TRole, TScope>,
+  action: TAction,
+  resourceType: TResource,
+  opts: Pick<ExpressOptions<TScope>, 'getUserId' | 'getEnvironment' | 'onDenied'> & { scope?: TScope } = {},
 ): Middleware {
   const {
     getUserId = (req) => req.user?.id ?? null,
     getEnvironment = extractEnvironment,
     onDenied = (_, res) => res.status(403).json({ error: 'Forbidden' }),
+    scope,
   } = opts
 
   return async (req, res, next) => {
@@ -96,6 +123,7 @@ export function guard(
         action,
         { type: resourceType, id: req.params?.id, attributes: {} },
         getEnvironment(req),
+        scope,
       )
       allowed ? next() : onDenied(req, res)
     } catch (err) {
@@ -111,9 +139,13 @@ export function guard(
  *   import { Router } from "express";
  *   app.use("/api/access-admin", adminRouter(engine));
  */
-export function adminRouter(engine: Engine): any {
-  // Returns a function that takes Router as arg to avoid importing express
-  return (Router: any) => {
+export function adminRouter<
+  TAction extends string = string,
+  TResource extends string = string,
+  TRole extends string = string,
+  TScope extends string = string,
+>(engine: Engine<TAction, TResource, TRole, TScope>): (Router: () => ExpressRouterLike) => ExpressRouterLike {
+  return (Router: () => ExpressRouterLike) => {
     const router = Router()
 
     router.get('/policies', async (_: Req, res: Res) => {
@@ -125,22 +157,23 @@ export function adminRouter(engine: Engine): any {
     })
 
     router.put('/policies', async (req: Req, res: Res) => {
-      await engine.admin.savePolicy(req.body)
+      await engine.admin.savePolicy(req.body as Policy<TAction, TResource, TRole>)
       res.json({ ok: true })
     })
 
     router.put('/roles', async (req: Req, res: Res) => {
-      await engine.admin.saveRole(req.body)
+      await engine.admin.saveRole(req.body as Role<TAction, TResource, TRole, TScope>)
       res.json({ ok: true })
     })
 
     router.post('/subjects/:id/roles', async (req: Req, res: Res) => {
-      await engine.admin.assignRole(req.params!.id as string, req.body.roleId, req.body.scope)
+      const body = req.body as Record<string, unknown>
+      await engine.admin.assignRole(req.params!.id as string, body.roleId as TRole, body.scope as TScope)
       res.json({ ok: true })
     })
 
     router.delete('/subjects/:id/roles/:roleId', async (req: Req, res: Res) => {
-      await engine.admin.revokeRole(req.params!.id as string, req.params!.roleId as string)
+      await engine.admin.revokeRole(req.params!.id as string, req.params!.roleId as TRole)
       res.json({ ok: true })
     })
 

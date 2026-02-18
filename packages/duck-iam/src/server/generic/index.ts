@@ -5,12 +5,17 @@ import type { Environment, PermissionCheck, PermissionMap, Resource } from '../.
  * Server-side permission map generator.
  * Call once per request, pass the map to the client.
  */
-export async function generatePermissionMap(
-  engine: Engine,
+export async function generatePermissionMap<
+  TAction extends string = string,
+  TResource extends string = string,
+  TRole extends string = string,
+  TScope extends string = string,
+>(
+  engine: Engine<TAction, TResource, TRole, TScope>,
   subjectId: string,
-  checks: PermissionCheck[],
+  checks: readonly PermissionCheck<TAction, TResource, TScope>[],
   environment?: Environment,
-): Promise<PermissionMap> {
+): Promise<PermissionMap<TAction, TResource, TScope>> {
   return engine.permissions(subjectId, checks, environment)
 }
 
@@ -21,10 +26,16 @@ export async function generatePermissionMap(
  * Usage:
  *   const can = createSubjectCan(engine, req.user.id);
  *   if (await can("delete", "post")) { ... }
+ *   if (await can("manage", "user", undefined, "admin")) { ... }
  */
-export function createSubjectCan(engine: Engine, subjectId: string, environment?: Environment) {
-  return (action: string, resourceType: string, resourceId?: string) =>
-    engine.can(subjectId, action, { type: resourceType, id: resourceId, attributes: {} }, environment)
+export function createSubjectCan<
+  TAction extends string = string,
+  TResource extends string = string,
+  TRole extends string = string,
+  TScope extends string = string,
+>(engine: Engine<TAction, TResource, TRole, TScope>, subjectId: string, environment?: Environment) {
+  return (action: TAction, resourceType: TResource, resourceId?: string, scope?: TScope) =>
+    engine.can(subjectId, action, { type: resourceType, id: resourceId, attributes: {} }, environment, scope)
 }
 
 /**

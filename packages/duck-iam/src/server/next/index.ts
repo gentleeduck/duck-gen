@@ -12,38 +12,34 @@ import type { Engine } from '../../core/engine'
 import type { Environment, PermissionCheck, PermissionMap, Resource } from '../../core/types'
 import { METHOD_ACTION_MAP } from '../generic'
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ------------------------------------------------------------
 // API Route Handler wrapper
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ------------------------------------------------------------
 
 type RouteContext = { params: Promise<Record<string, string>> | Record<string, string> }
 type RouteHandler = (req: Request, ctx: RouteContext) => Promise<Response>
 
-export interface WithAccessOptions {
+export interface WithAccessOptions<TScope extends string = string> {
   getUserId?: (req: Request) => string | null | Promise<string | null>
   getEnvironment?: (req: Request) => Environment
+  scope?: TScope
+  onError?: (err: Error, req: Request) => Response
 }
 
 /**
  * Wrap a Next.js App Router route handler with access control.
- *
- *   // app/api/posts/[id]/route.ts
- *   import { withAccess } from "access-engine/server/next";
- *
- *   async function handler(req: Request, ctx) {
- *     // Only runs if authorized
- *     return Response.json({ ok: true });
- *   }
- *
- *   export const DELETE = withAccess(engine, "delete", "post", handler);
- *   export const PATCH  = withAccess(engine, "update", "post", handler);
  */
-export function withAccess(
-  engine: Engine,
-  action: string,
-  resourceType: string,
+export function withAccess<
+  TAction extends string = string,
+  TResource extends string = string,
+  TRole extends string = string,
+  TScope extends string = string,
+>(
+  engine: Engine<TAction, TResource, TRole, TScope>,
+  action: TAction,
+  resourceType: TResource,
   handler: RouteHandler,
-  opts: WithAccessOptions = {},
+  opts: WithAccessOptions<TScope> = {},
 ): RouteHandler {
   const {
     getUserId = (req) => req.headers.get('x-user-id'),
@@ -52,6 +48,8 @@ export function withAccess(
       userAgent: req.headers.get('user-agent') ?? undefined,
       timestamp: Date.now(),
     }),
+    scope,
+    onError = () => Response.json({ error: 'Internal server error' }, { status: 500 }),
   } = opts
 
   return async (req, ctx) => {
@@ -60,108 +58,115 @@ export function withAccess(
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const params = ctx.params instanceof Promise ? await ctx.params : ctx.params
-    const resourceId = params?.id
+    try {
+      const params = ctx.params instanceof Promise ? await ctx.params : ctx.params
+      const resourceId = params?.id
 
-    const allowed = await engine.can(
-      userId,
-      action,
-      { type: resourceType, id: resourceId, attributes: {} },
-      getEnvironment(req),
-    )
+      const allowed = await engine.can(
+        userId,
+        action,
+        { type: resourceType, id: resourceId, attributes: {} },
+        getEnvironment(req),
+        scope,
+      )
 
-    if (!allowed) {
-      return Response.json({ error: 'Forbidden' }, { status: 403 })
+      if (!allowed) {
+        return Response.json({ error: 'Forbidden' }, { status: 403 })
+      }
+
+      return handler(req, ctx)
+    } catch (err) {
+      return onError(err as Error, req)
     }
-
-    return handler(req, ctx)
   }
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ------------------------------------------------------------
 // Server Component helpers
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ------------------------------------------------------------
 
 /**
  * Check a single permission in a Server Component or server action.
- *
- *   export default async function Page() {
- *     const canEdit = await checkAccess(engine, userId, "update", "post");
- *     return canEdit ? <Editor /> : <Viewer />;
- *   }
  */
-export async function checkAccess(
-  engine: Engine,
+export async function checkAccess<
+  TAction extends string = string,
+  TResource extends string = string,
+  TRole extends string = string,
+  TScope extends string = string,
+>(
+  engine: Engine<TAction, TResource, TRole, TScope>,
   subjectId: string,
-  action: string,
-  resourceType: string,
+  action: TAction,
+  resourceType: TResource,
   resourceId?: string,
+  scope?: TScope,
 ): Promise<boolean> {
-  return engine.can(subjectId, action, {
-    type: resourceType,
-    id: resourceId,
-    attributes: {},
-  })
+  return engine.can(
+    subjectId,
+    action,
+    {
+      type: resourceType,
+      id: resourceId,
+      attributes: {},
+    },
+    undefined,
+    scope,
+  )
 }
 
 /**
  * Generate a PermissionMap in a Server Component or layout.
  * Pass this to the AccessProvider on the client side.
- *
- *   // app/layout.tsx
- *   export default async function Layout({ children }) {
- *     const perms = await getPermissions(engine, userId, [
- *       { action: "create", resource: "post" },
- *       { action: "manage", resource: "team" },
- *     ]);
- *     return <AccessProvider permissions={perms}>{children}</AccessProvider>;
- *   }
  */
-export async function getPermissions(
-  engine: Engine,
+export async function getPermissions<
+  TAction extends string = string,
+  TResource extends string = string,
+  TRole extends string = string,
+  TScope extends string = string,
+>(
+  engine: Engine<TAction, TResource, TRole, TScope>,
   subjectId: string,
-  checks: PermissionCheck[],
-): Promise<PermissionMap> {
+  checks: readonly PermissionCheck<TAction, TResource, TScope>[],
+): Promise<PermissionMap<TAction, TResource, TScope>> {
   return engine.permissions(subjectId, checks)
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ------------------------------------------------------------
 // Next.js Middleware integration
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ------------------------------------------------------------
 
-export interface NextMiddlewareOptions {
+export interface NextMiddlewareOptions<
+  TAction extends string = string,
+  TResource extends string = string,
+  TScope extends string = string,
+> {
   /** Map URL patterns to required permissions */
   rules: Array<{
     /** Regex or glob pattern for the path */
     pattern: string | RegExp
     /** Required action. If not set, inferred from HTTP method. */
-    action?: string
+    action?: TAction
     /** Resource type for this route */
-    resource: string
+    resource: TResource
+    /** Optional scope for this route */
+    scope?: TScope
   }>
   getUserId: (req: Request) => string | null | Promise<string | null>
+  onError?: (err: Error, req: Request) => Response
 }
 
 /**
  * Create a matcher function for Next.js middleware.
  * Use in middleware.ts to protect routes at the edge.
- *
- *   // middleware.ts
- *   import { createNextMiddleware } from "access-engine/server/next";
- *
- *   const checkAccess = createNextMiddleware(engine, {
- *     getUserId: (req) => getSession(req)?.userId,
- *     rules: [
- *       { pattern: /^\/admin/, resource: "admin", action: "access" },
- *       { pattern: /^\/api\/posts/, resource: "post" },
- *     ],
- *   });
- *
- *   export async function middleware(req: NextRequest) {
- *     return checkAccess(req);
- *   }
  */
-export function createNextMiddleware(engine: Engine, opts: NextMiddlewareOptions) {
+export function createNextMiddleware<
+  TAction extends string = string,
+  TResource extends string = string,
+  TRole extends string = string,
+  TScope extends string = string,
+>(engine: Engine<TAction, TResource, TRole, TScope>, opts: NextMiddlewareOptions<TAction, TResource, TScope>) {
+  const { onError = () => Response.json({ error: 'Internal server error' }, { status: 500 }) } = opts
+
   return async (req: Request): Promise<Response | null> => {
     const url = new URL(req.url)
     const path = url.pathname
@@ -180,17 +185,27 @@ export function createNextMiddleware(engine: Engine, opts: NextMiddlewareOptions
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const action = matchedRule.action ?? METHOD_ACTION_MAP[req.method] ?? 'read'
+    try {
+      const action = matchedRule.action ?? (METHOD_ACTION_MAP[req.method] as TAction) ?? ('read' as TAction)
 
-    const allowed = await engine.can(userId, action, {
-      type: matchedRule.resource,
-      attributes: {},
-    })
+      const allowed = await engine.can(
+        userId,
+        action,
+        {
+          type: matchedRule.resource,
+          attributes: {},
+        },
+        undefined,
+        matchedRule.scope,
+      )
 
-    if (!allowed) {
-      return Response.json({ error: 'Forbidden' }, { status: 403 })
+      if (!allowed) {
+        return Response.json({ error: 'Forbidden' }, { status: 403 })
+      }
+
+      return null // Allow through
+    } catch (err) {
+      return onError(err as Error, req)
     }
-
-    return null // Allow through
   }
 }
