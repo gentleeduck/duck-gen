@@ -8,7 +8,7 @@ export function Announcement() {
       <Link className="flex items-center gap-2 overflow-hidden" href="/docs/duck-gen">
         <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs">New</span>
         <span className="truncate text-sm">Duck Gen and Duck Query are production-ready</span>
-        <span className="shrink-0 text-sm underline">Get started</span>
+        <span className="hidden shrink-0 text-sm underline sm:inline">Get started</span>
         <ArrowRightIcon aria-hidden="true" className="shrink-0" />
       </Link>
     </Badge>
