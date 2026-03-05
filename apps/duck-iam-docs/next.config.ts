@@ -52,13 +52,7 @@ const nextConfig: NextConfig = {
     ],
   },
   reactStrictMode: false,
-<<<<<<< HEAD:apps/duck-iam-docs/next.config.ts
-  // redirects: async () => {},
-  transpilePackages: ['@gentleduck/docs'],
-  typescript: {},
-=======
   transpilePackages: ['@gentleduck/registry-ui', '@gentleduck/docs'],
->>>>>>> 68028f2b8f071c10853ff31e15c817d8fd06f964:apps/duck-gen-docs/next.config.ts
   // rewrites: async () => {
   //   return [
   //     {

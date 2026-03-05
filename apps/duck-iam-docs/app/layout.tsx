@@ -3,17 +3,9 @@ import './globals.css'
 import '@gentleduck/motion/css'
 import { TailwindIndicator, ThemeProvider } from '@gentleduck/docs/client'
 import { cn } from '@gentleduck/libs/cn'
-<<<<<<< HEAD:apps/duck-iam-docs/app/layout.tsx
 import { KeyProvider } from '@gentleduck/vim/react'
-import { Geist_Mono, Montserrat } from 'next/font/google'
-=======
-import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
-import { AppClientProviders } from '~/components/app-client-providers'
-import { DocsAppProvider } from '~/components/docs-provider'
-import { ThemeWrapper } from '~/components/themes'
->>>>>>> 68028f2b8f071c10853ff31e15c817d8fd06f964:apps/duck-gen-docs/app/layout.tsx
 import { docsConfig } from '~/config/docs'
 import { METADATA } from '~/config/metadata'
 import { META_THEME_COLORS, siteConfig } from '~/config/site'
@@ -65,7 +57,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={cn('duck min-h-svh bg-background antialiased')}>
-<<<<<<< HEAD:apps/duck-iam-docs/app/layout.tsx
         <KeyProvider timeoutMs={100}>
           <ThemeProvider
             attribute="class"
@@ -81,23 +72,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {process.env.NODE_ENV === 'development' && <TailwindIndicator />}
           </ThemeProvider>
         </KeyProvider>
-=======
-        <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableColorScheme enableSystem>
-          <AppClientProviders>
-            <DirectionProvider dir="ltr">
-              <DocsAppProvider docs={docsEntries} docsConfig={docsConfig} siteConfig={docsSiteConfig}>
-                <ThemeWrapper>
-                  <div vaul-drawer-wrapper="">
-                    <div className="relative flex min-h-svh flex-col bg-background">{children}</div>
-                  </div>
-
-                  {process.env.NODE_ENV === 'development' && <TailwindIndicator />}
-                </ThemeWrapper>
-              </DocsAppProvider>
-            </DirectionProvider>
-          </AppClientProviders>
-        </ThemeProvider>
->>>>>>> 68028f2b8f071c10853ff31e15c817d8fd06f964:apps/duck-gen-docs/app/layout.tsx
       </body>
     </html>
   )
