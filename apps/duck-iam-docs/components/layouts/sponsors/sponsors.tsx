@@ -15,12 +15,17 @@ const sponsors: Sponsor[] = [
     href: 'https://aibrush.co',
     name: 'AIBrush',
   },
+  {
+    avatar: 'https://github.com/wildduck2.png',
+    href: 'https://github.com/wildduck2',
+    name: 'wildduck2',
+  },
 ]
 
 function SponsorCell({ sponsor }: { sponsor: Sponsor }) {
   return (
     <Link
-      className="group flex items-center justify-center gap-3 border-border/60 border-r border-b px-8 py-6 transition-colors last:border-r-0 hover:bg-muted/40"
+      className="group flex items-center justify-center gap-3 border-r border-b border-border/60 px-8 py-6 transition-colors last:border-r-0 hover:bg-muted/40"
       href={sponsor.href}
       rel="noreferrer"
       target="_blank">
