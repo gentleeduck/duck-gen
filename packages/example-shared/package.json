@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.0.0",
-    "access-engine": "workspace:*"
+    "duck-iam": "workspace:*"
   },
   "devDependencies": {
     "@gentleduck/typescript-config": "workspace:*",

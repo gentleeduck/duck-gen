@@ -1,6 +1,6 @@
-# access-engine Example App
+# duck-iam Example App
 
-Full working example showing access-engine with Next.js (App Router), Express,
+Full working example showing duck-iam with Next.js (App Router), Express,
 Hono/Cloudflare Workers, React client components, and Prisma/Drizzle.
 
 ## Quick Start
@@ -27,7 +27,7 @@ bun run dev
 ### Option A: Prisma
 
 ```bash
-# The schema already includes access-engine tables.
+# The schema already includes duck-iam tables.
 # Just run migrate:
 bunx prisma migrate dev --name access_engine
 bunx prisma generate
@@ -79,7 +79,7 @@ psql $DATABASE_URL < prisma/migrations/001_access_engine/migration.sql
 │  └──────┬───────────────────────────────────────┘   │
 │         │                                           │
 ├─────────┼───────────────────────────────────────────┤
-│         │           access-engine                    │
+│         │           duck-iam                    │
 │  ┌──────▼───────┐                                   │
 │  │    Engine     │──> evaluate() (pure, stateless)   │
 │  │              │──> rolesToPolicy() (RBAC→ABAC)    │
@@ -108,14 +108,14 @@ psql $DATABASE_URL < prisma/migrations/001_access_engine/migration.sql
 ### Setup & Config
 | File | Purpose |
 |------|---------|
-| `prisma/schema.prisma` | DB schema (your tables + access-engine tables) |
+| `prisma/schema.prisma` | DB schema (your tables + duck-iam tables) |
 | `prisma/migrations/001_access_engine/migration.sql` | Raw SQL migration |
 | `prisma/seed.ts` | Seeds roles, policies, and test users |
 | `src/lib/prisma.ts` | Prisma client singleton |
 | `src/lib/access.ts` | **Central config**: roles, policies, engine instance |
 | `src/lib/access-client.tsx` | React hooks/components factory |
 | `src/lib/auth.ts` | Auth helpers (replace with your auth) |
-| `src/lib/sync-attributes.ts` | Sync user data → access-engine attributes |
+| `src/lib/sync-attributes.ts` | Sync user data → duck-iam attributes |
 
 ### Backend (Server)
 | File | Purpose |
@@ -166,7 +166,7 @@ const canEdit = await engine.can(userId, "update", {
 
 ### 2. Attribute sync
 
-When user data changes, sync to access-engine:
+When user data changes, sync to duck-iam:
 ```ts
 await syncUserAttributes(userId);
 ```

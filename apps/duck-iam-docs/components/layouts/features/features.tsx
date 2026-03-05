@@ -1,7 +1,15 @@
 'use client'
 
-import { Card, CardTitle } from '@gentleduck/registry-ui-duckui/card'
 import { features } from './features.constants'
+import type React from 'react'
+
+function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return <div className={className} {...props} />
+}
+
+function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
+  return <h3 className={className} {...props} />
+}
 
 export function SectionTitle({ title, subtitle }: { title: string; subtitle: string }) {
   return (

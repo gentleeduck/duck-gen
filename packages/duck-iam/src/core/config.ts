@@ -11,7 +11,7 @@ import { validatePolicy, validateRoles } from './validate'
 export interface AccessConfigInput<
   TActions extends readonly string[],
   TResources extends readonly string[],
-  TScopes extends readonly string[] = readonly [],
+  TScopes extends readonly string[] = Readonly<[]>,
 > {
   readonly actions: TActions
   readonly resources: TResources
@@ -58,7 +58,7 @@ export interface AccessConfig<TAction extends string, TResource extends string, 
 export function createAccessConfig<
   const TActions extends readonly string[],
   const TResources extends readonly string[],
-  const TScopes extends readonly string[] = readonly [],
+  const TScopes extends readonly string[] = Readonly<[]>,
 >(
   input: AccessConfigInput<TActions, TResources, TScopes>,
 ): AccessConfig<TActions[number], TResources[number], TScopes[number]> {

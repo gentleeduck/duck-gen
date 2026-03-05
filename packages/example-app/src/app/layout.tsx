@@ -1,5 +1,5 @@
 import type { AppAction, AppResource } from '@gentleduck/example-shared'
-import type { PermissionMap } from 'access-engine'
+import type { PermissionMap } from 'duck-iam'
 import { Sidebar } from '@/components/sidebar'
 import { AccessProvider } from '@/lib/access-client'
 import { apiFetch } from '@/lib/api'

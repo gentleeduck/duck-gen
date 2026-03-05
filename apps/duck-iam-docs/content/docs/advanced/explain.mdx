@@ -8,6 +8,40 @@ description: Use engine.explain() to trace every policy, rule, and condition eva
 When a permission check returns an unexpected result, you need to understand why. duck-iam
 provides two categories of debugging tools:
 
+<MermaidDiagram chart={`flowchart LR
+    subgraph Result["ExplainResult"]
+        direction TB
+        DEC["decision\nallowed, effect, duration"]
+        REQ["request\naction, resource, scope"]
+        SUB["subject\nid, roles, attrs"]
+        SUM["summary\nhuman-readable text"]
+    end
+
+    subgraph Policies["policies: PolicyTrace[]"]
+        direction TB
+        PT["PolicyTrace\npolicyId, algorithm, targetMatch"]
+        PT --> PT_R["rules: RuleTrace[]"]
+        PT --> PT_RES["result: allow / deny"]
+    end
+
+    subgraph Rules["RuleTrace"]
+        direction TB
+        RT_AM["actionMatch"]
+        RT_RM["resourceMatch"]
+        RT_CM["conditionsMet"]
+        RT_M["matched = all three"]
+    end
+
+    subgraph Conditions["ConditionLeafTrace"]
+        direction TB
+        LEAF_F["field: 'resource.attributes.ownerId'"]
+        LEAF_E["expected: 'user-1'"]
+        LEAF_A["actual: 'user-2'"]
+        LEAF_R["result: false"]
+    end
+
+    Result --> Policies --> Rules --> Conditions`} />
+
 - **engine.explain()** -- Returns a full evaluation trace showing every policy, every rule,
   every condition, and exactly which ones matched or failed.
 - **validatePolicy() / validateRoles()** -- Runtime validation for untrusted or dynamic

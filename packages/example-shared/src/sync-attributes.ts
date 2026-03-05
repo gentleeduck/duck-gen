@@ -1,5 +1,5 @@
 // When your app data changes (user upgrades plan, org gets suspended, user gets flagged),
-// you need to sync those changes to the access-engine attributes table.
+// you need to sync those changes to the duck-iam attributes table.
 //
 // Call these functions from your webhooks, cron jobs, or event handlers.
 
@@ -7,7 +7,7 @@ import { engine } from './access'
 import { prisma } from './prisma'
 
 /**
- * Sync a single user's attributes from your app tables to access-engine.
+ * Sync a single user's attributes from your app tables to duck-iam.
  * Call this after: plan change, org change, flag change, etc.
  */
 export async function syncUserAttributes(userId: string): Promise<void> {

@@ -7,6 +7,25 @@ description: Protect your API routes with duck-iam server integrations for Expre
 
 duck-iam ships server integrations for the most popular Node.js frameworks. Each integration follows the same pattern: wrap your engine around incoming requests, extract the user identity, map the HTTP method to an action, infer the resource from the route, and let the engine decide.
 
+<MermaidDiagram chart={`flowchart LR
+    REQ["HTTP Request\nDELETE /posts/42"] --> MW["Middleware / Guard"]
+    MW --> EXTRACT["Extract from request"]
+
+    subgraph Extract["Extraction"]
+        direction TB
+        E1["getUserId(req) -> 'user-1'"]
+        E2["getAction(req) -> 'delete' (from DELETE)"]
+        E3["getResource(req) -> {type:'post', id:'42'}"]
+        E4["getScope(req) -> 'org-1' (from header)"]
+        E5["getEnvironment(req) -> {ip, userAgent, timestamp}"]
+    end
+
+    EXTRACT --> Extract
+    Extract --> ENGINE["engine.can('user-1', 'delete', {type:'post',...})"]
+    ENGINE --> CHECK{"Allowed?"}
+    CHECK -- "Yes" --> NEXT["next() -- proceed to handler"]
+    CHECK -- "No" --> DENY["403 Forbidden"]`} />
+
 Every integration is a thin adapter over `engine.can()`. There is no runtime framework dependency -- duck-iam defines its own minimal type interfaces so you never pull in extra packages.
 
 ### HTTP method mapping

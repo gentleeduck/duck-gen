@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { resolveEffectiveRoles, rolesToPolicy } from './rbac'
-import type { Role } from './types'
+import { resolveEffectiveRoles, rolesToPolicy } from '../rbac'
+import type { Role } from '../types'
 
 const viewer: Role = {
   id: 'viewer',

@@ -1,4 +1,4 @@
-# Contributing to access-engine
+# Contributing to duck-iam
 
 First off, thank you for considering contributing to **Gentleduck**!
 We welcome all kinds of contributions — from bug reports and documentation improvements to feature requests and new packages.

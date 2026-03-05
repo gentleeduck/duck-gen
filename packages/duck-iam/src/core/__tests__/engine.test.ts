@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { MemoryAdapter } from '../adapters/memory'
-import { Engine } from './engine'
-import type { Policy, Role } from './types'
+import { MemoryAdapter } from '../../adapters/memory'
+import { Engine } from '../engine'
+import type { Policy, Role } from '../types'
 
 // -- Test setup --
 

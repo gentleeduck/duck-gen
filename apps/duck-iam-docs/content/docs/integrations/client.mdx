@@ -7,6 +7,26 @@ description: Client-side access control for React, Vue, and vanilla JavaScript w
 
 duck-iam provides client libraries that let you check permissions instantly in the browser. The recommended pattern is server-driven: generate a `PermissionMap` on the server, send it to the client, and use it for all UI decisions.
 
+<MermaidDiagram chart={`flowchart LR
+    subgraph Server["Server Side"]
+        direction TB
+        AUTH["Authenticate user"]
+        AUTH --> PERMS["engine.permissions(userId, checks)"]
+        PERMS --> MAP["PermissionMap:\n'create:post': true\n'delete:post': false\n'manage:team': false"]
+    end
+
+    MAP --> SEND["Send to client\n(props / API / SSR)"]
+
+    subgraph Client["Client Side"]
+        direction TB
+        HYDRATE["Hydrate Provider / Plugin / Client"]
+        HYDRATE --> CAN["can('create', 'post') -- true"]
+        HYDRATE --> CANNOT["cannot('manage', 'team') -- true"]
+        HYDRATE --> COMP["Can / Cannot components"]
+    end
+
+    SEND --> HYDRATE`} />
+
 Every client library supports the same core operations:
 
 - `can(action, resource, resourceId?, scope?)` -- returns `true` if the permission is granted

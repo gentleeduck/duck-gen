@@ -7,6 +7,21 @@ description: End-to-end guide covering role definitions, ABAC policies, server m
 
 This guide walks you through the full duck-iam workflow:
 
+<MermaidDiagram chart={`flowchart TD
+    S1["Step 1: Define Access Config\n(actions, resources, scopes)"]
+    S2["Step 2: Define Roles\n(viewer -> editor -> admin)"]
+    S3["Step 3: Create Engine\n(adapter + config)"]
+    S4["Step 4: Add ABAC Policy\n(business hours, etc.)"]
+    S5["Step 5: Owner-Only Conditions\n(grantWhen + isOwner)"]
+    S6["Step 6: Multi-Tenant Scopes\n(per-org roles)"]
+    S7["Step 7: Server Middleware\n(Express / Hono / NestJS / Next.js)"]
+    S8["Step 8: Client Provider\n(React / Vue / Vanilla)"]
+
+    S1 --> S2 --> S3 --> S4
+    S3 --> S5
+    S3 --> S6
+    S3 --> S7 --> S8`} />
+
 1. Define typed roles with inheritance.
 2. Create the engine and check permissions.
 3. Add an ABAC policy with attribute conditions.

@@ -12,7 +12,7 @@
     "vercel": "^50.1.6"
   },
   "name": "gentleduck",
-  "description": "access-engine: Modern ABAC/RBAC access control engine with framework integrations.",
+  "description": "duck-iam: Modern ABAC/RBAC access control engine with framework integrations.",
   "author": "GentleDuck (https://www.gentleduck.org)",
   "license": "MIT",
   "homepage": "https://www.gentleduck.org",
@@ -24,7 +24,7 @@
     "url": "https://github.com/gentleeduck/duck-ui/issues"
   },
   "keywords": [
-    "access-engine",
+    "duck-iam",
     "rbac",
     "abac",
     "access-control",

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import type { Policy, Role } from '../../core/types'
-import { MemoryAdapter } from './index'
+import type { Policy, Role } from '../../../core/types'
+import { MemoryAdapter } from '../index'
 
 type A = 'read' | 'write'
 type R = 'post' | 'comment'

@@ -1,9 +1,9 @@
 import type { AppAction, AppResource, AppRole, AppScope } from '@gentleduck/example-shared'
 import { STANDARD_CHECKS } from '@gentleduck/example-shared'
 import { Controller, Get, Inject, Req } from '@nestjs/common'
-import type { Engine } from 'access-engine'
-import { generatePermissionMap } from 'access-engine/server/generic'
-import { ACCESS_ENGINE_TOKEN } from 'access-engine/server/nest'
+import type { Engine } from 'duck-iam'
+import { generatePermissionMap } from 'duck-iam/server/generic'
+import { ACCESS_ENGINE_TOKEN } from 'duck-iam/server/nest'
 import { type AuthenticatedRequest, extractUserId } from '../shared/auth'
 
 @Controller('me')

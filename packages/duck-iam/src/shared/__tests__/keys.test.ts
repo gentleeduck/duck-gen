@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildPermissionKey } from './keys'
+import { buildPermissionKey } from '../keys'
 
 describe('buildPermissionKey()', () => {
   it('action:resource', () => {

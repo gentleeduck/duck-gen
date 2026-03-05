@@ -10,6 +10,25 @@ optional configuration, then call its methods to check permissions. The engine l
 policies from the adapter, resolves the subject, runs the evaluation pipeline, and returns a
 decision.
 
+<MermaidDiagram chart={`flowchart LR
+    subgraph Engine_Block["Engine"]
+        direction TB
+        CORE["Core Methods\ncan / check / authorize\npermissions / explain"]
+        CACHE["Cache Layer\npolicy / role / rbac / subject"]
+        HOOKS["Hooks\nbefore / after / deny / error"]
+        ADMIN["Admin API\nsave / delete / assign / revoke"]
+    end
+
+    subgraph Adapters["Storage Adapters"]
+        direction TB
+        MEM["Memory"]
+        PRISMA["Prisma"]
+        DRIZZLE["Drizzle"]
+        HTTP["HTTP"]
+    end
+
+    Engine_Block --> Adapters`} />
+
 ```typescript
 import { Engine } from 'duck-iam'
 import { MemoryAdapter } from 'duck-iam/adapters/memory'
@@ -280,6 +299,20 @@ interface Decision {
 Hooks let you intercept and observe the evaluation lifecycle. All hooks are optional and
 can be synchronous or async.
 
+<MermaidDiagram chart={`flowchart LR
+    START["engine.can()"] --> BEF["beforeEvaluate\n(modify request)"]
+    BEF --> EVAL["Evaluate\npolicies"]
+    EVAL --> AFT["afterEvaluate\n(log/audit)"]
+    AFT --> CHECK{"Denied?"}
+    CHECK -- "Yes" --> DENY["onDeny\n(alert/monitor)"]
+    CHECK -- "No" --> DONE["Return Decision"]
+    DENY --> DONE
+
+    EVAL -- "Error" --> ERR["onError\n(report error)"]
+    ERR --> DENY_D["Return deny"]`} />
+
+Note: `engine.explain()` only triggers `beforeEvaluate`. The `afterEvaluate`, `onDeny`, and `onError` hooks are not called -- explain is a read-only diagnostic tool.
+
 ```typescript
 interface EngineHooks {
   beforeEvaluate?(request: AccessRequest): AccessRequest | Promise<AccessRequest>
@@ -389,6 +422,34 @@ hooks: {
 
 The engine maintains four LRU caches:
 
+<MermaidDiagram chart={`flowchart LR
+    REQ["engine.can()"] --> SC_CHECK{"Subject\ncached?"}
+    SC_CHECK -- "Hit" --> USE_SUBJ["Use cached"]
+    SC_CHECK -- "Miss" --> LOAD_SUBJ["Load + cache"]
+    USE_SUBJ --> PC_CHECK{"Policies\ncached?"}
+    LOAD_SUBJ --> PC_CHECK
+    PC_CHECK -- "Hit" --> USE_POL["Use cached"]
+    PC_CHECK -- "Miss" --> LOAD_POL["Load + cache"]
+    USE_POL --> RC_CHECK{"RBAC policy\ncached?"}
+    LOAD_POL --> RC_CHECK
+    RC_CHECK -- "Hit" --> EVAL["Evaluate"]
+    RC_CHECK -- "Miss" --> CONVERT["rolesToPolicy() + cache"]
+    CONVERT --> EVAL`} />
+
+The engine maintains four LRU caches:
+
+<MermaidDiagram chart={`flowchart LR
+    subgraph Caches["Four LRU Caches"]
+        PC["Policy Cache\nkey: 'all'"]
+        RC["Role Cache\nkey: 'all'"]
+        RBAC_C["RBAC Policy Cache\nkey: 'rbac'"]
+        SC["Subject Cache\nkey: subjectId"]
+    end
+    subgraph Settings["Settings"]
+        T1["cacheTTL: 60s default"]
+        T2["maxCacheSize: 1000 default"]
+    end`} />
+
 | Cache | Key | Stores | Purpose |
 | --- | --- | --- | --- |
 | Policy cache | `'all'` | All ABAC policies | Avoid re-fetching policies on every check |
@@ -415,6 +476,12 @@ engine.invalidateRoles()
 ### When to invalidate
 
 The admin API methods automatically invalidate the relevant caches:
+
+<MermaidDiagram chart={`flowchart LR
+    SP["savePolicy\ndeletePolicy"] --> POL["Invalidates:\nPolicy cache + RBAC policy cache"]
+    SR["saveRole\ndeleteRole"] --> ROLE["Invalidates:\nRole cache + RBAC policy + ALL subjects"]
+    AR["assignRole\nrevokeRole"] --> SUBJ["Invalidates:\nSpecific subject only"]
+    SA["setAttributes"] --> SUBJ2["Invalidates:\nSpecific subject only"]`} />
 
 - `admin.savePolicy()` / `admin.deletePolicy()` -- invalidates policies.
 - `admin.saveRole()` / `admin.deleteRole()` -- invalidates roles + subjects.

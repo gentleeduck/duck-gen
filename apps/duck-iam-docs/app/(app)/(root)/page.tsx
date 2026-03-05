@@ -1,9 +1,9 @@
-import { PageActions, PageHeader, PageHeaderDescription } from '@gentleduck/docs/client'
-import { Button } from '@gentleduck/registry-ui-duckui/button'
+import { PageActions, PageHeader, PageHeaderDescription, PageHeaderHeading } from '@gentleduck/docs/client'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Announcement } from '~/components/announcement'
 import { FeaturesSection } from '~/components/layouts/features'
+import { SponsorsSection } from '~/components/layouts/sponsors'
 
 const title = 'duck-iam -- Type-safe access control that actually works.'
 const description =
@@ -43,32 +43,25 @@ export default function Page() {
           aria-hidden="true"
           className="absolute bottom-16 left-0 z-0 h-36 w-36 rounded-full bg-primary/20 blur-3xl"></div>
         <Announcement />
-        <div className="relative">
-          <h1 className="inline-block max-w-6xl font-bold leading-none tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-            <div className="relative mb-3 text-center text-4xl sm:text-5xl md:mb-5 md:text-6xl">
-              <span className="inline-block">DUCK IAM</span>
-            </div>
-            <div className="mt-1 block text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
-              <span className="relative inline-block -rotate-3 bg-primary px-4 py-1 text-primary-foreground">
-                TYPE-SAFE
-              </span>
-              <span className="ml-2 inline-block text-foreground uppercase">ACCESS CONTROL</span>
-            </div>
-          </h1>
-        </div>
+        <PageHeaderHeading>{title}</PageHeaderHeading>
         <PageHeaderDescription>{description}</PageHeaderDescription>
         <PageActions className="mx-auto w-full justify-center">
-          <Button>
-            <Link href="/docs">Get Started</Link>
-          </Button>
-          <Button variant="ghost">
-            <Link href="/docs/core">Core Concepts</Link>
-          </Button>
+          <Link
+            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground text-sm"
+            href="/docs">
+            Get Started
+          </Link>
+          <Link
+            className="inline-flex items-center justify-center rounded-md border px-4 py-2 font-medium text-sm hover:bg-muted"
+            href="/docs/core">
+            Core Concepts
+          </Link>
         </PageActions>
       </PageHeader>
       <div className="container-wrapper">
-        <div>
+        <div className="">
           <FeaturesSection />
+          <SponsorsSection />
         </div>
       </div>
     </>

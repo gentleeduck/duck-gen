@@ -7,6 +7,20 @@ description: Use createAccessConfig() to define your application's permission sc
 
 duck-iam provides two ways to define permissions:
 
+<MermaidDiagram chart={`flowchart LR
+    subgraph Input["as const Input"]
+        direction TB
+        A["actions: ['create','read','update','delete']"]
+        R["resources: ['post','comment','user']"]
+        S["scopes: ['org-1','org-2']"]
+    end
+
+    Input --> CONFIG["createAccessConfig()"]
+    CONFIG --> UNION["TypeScript union types:\n'create' | 'read' | 'update' | 'delete'"]
+    UNION --> BUILDERS["Typed builders:\ndefineRole / policy / defineRule / when"]
+    BUILDERS --> OK["grant('read', 'post') -- OK"]
+    BUILDERS --> ERR["grant('craete', 'post') -- COMPILE ERROR"]`} />
+
 - **Untyped builders** -- `defineRole()`, `policy()`, `defineRule()`, `when()` imported
   directly from `duck-iam`. These accept any string for actions, resources, and scopes.
   Quick and flexible, but no compile-time validation.

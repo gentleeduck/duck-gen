@@ -54,7 +54,7 @@ const nextConfig: NextConfig = {
   },
   reactStrictMode: false,
   // redirects: async () => {},
-  transpilePackages: ['@gentleduck/registry-ui-duckui', '@gentleduck/docs'],
+  transpilePackages: ['@gentleduck/docs'],
   typescript: {},
   // rewrites: async () => {
   //   return [

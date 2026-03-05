@@ -57,6 +57,28 @@ interface Permission {
 Roles can inherit from other roles. When role B inherits from role A, it gets all
 of A's permissions plus its own. Inheritance chains can be arbitrarily deep.
 
+<MermaidDiagram chart={`flowchart BT
+    subgraph Hierarchy["Role Inheritance Chain"]
+        direction BT
+        VIEWER["viewer\nread:post, read:comment"]
+        EDITOR["editor\ninherits viewer\n+ create:post, update:post, delete:post"]
+        ADMIN["admin\ninherits editor\n+ *:* (all permissions)"]
+
+        VIEWER --> EDITOR
+        EDITOR --> ADMIN
+    end
+
+    subgraph Effective["Effective Permissions"]
+        direction TB
+        EV["viewer: read:post, read:comment"]
+        EE["editor: read:post, read:comment, create:post, update:post, delete:post"]
+        EA["admin: everything (inherited + wildcard)"]
+    end
+
+    VIEWER -.- EV
+    EDITOR -.- EE
+    ADMIN -.- EA`} />
+
 ```typescript
 const viewer = defineRole('viewer')
   .name('Viewer')
@@ -84,6 +106,17 @@ editor can do (which includes everything a viewer can do), plus unrestricted acc
 
 ### How inheritance is resolved
 
+<MermaidDiagram chart={`flowchart LR
+    START["Assigned: 'editor'"] --> CHECK{"Visited?"}
+    CHECK -- "No" --> ADD["Add 'editor'"]
+    ADD --> PARENT["inherits: 'viewer'"]
+    PARENT --> CHECK2{"Visited?"}
+    CHECK2 -- "No" --> ADD2["Add 'viewer'"]
+    ADD2 --> PARENT2["inherits: none"]
+    PARENT2 --> DONE["Result: ['editor', 'viewer']"]
+    CHECK -- "Yes (cycle)" --> SKIP["Skip"]
+    CHECK2 -- "Yes (cycle)" --> SKIP`} />
+
 The engine calls `resolveEffectiveRoles()` when loading a subject. Given a user
 assigned the `editor` role, the function walks the inheritance tree and returns
 `['editor', 'viewer']` -- the full set of effective roles.
@@ -99,6 +132,14 @@ the visited set prevents infinite recursion.
 ### Multiple inheritance
 
 A role can inherit from multiple parents:
+
+<MermaidDiagram chart={`flowchart BT
+    VIEWER["viewer\nread:post, read:comment"]
+    COMMENTER["commenter\ncreate:comment"]
+    MODERATOR["moderator\ninherits viewer + commenter\n+ delete:comment, update:comment"]
+
+    VIEWER --> MODERATOR
+    COMMENTER --> MODERATOR`} />
 
 ```typescript
 const moderator = defineRole('moderator')
@@ -116,6 +157,30 @@ moderator's own permissions.
 
 Scopes let you restrict roles to specific tenants, organizations, or workspaces.
 There are two mechanisms: role-level scopes and permission-level scopes.
+
+<MermaidDiagram chart={`flowchart TD
+    subgraph Mechanisms["Two Scoping Mechanisms"]
+        direction TB
+        M1["1. Role-level scope\nAll permissions in the role are scoped"]
+        M2["2. Permission-level scope (grantScoped)\nIndividual permissions are scoped"]
+        M3["3. Scoped role assignments\nSame role, different scope per user"]
+    end
+
+    subgraph Example["Multi-Tenant Example"]
+        direction TB
+        USER["User: alice"]
+        ORG1["org-acme: admin role"]
+        ORG2["org-globex: viewer role"]
+        GLOBAL["global: viewer role"]
+
+        USER --> ORG1
+        USER --> ORG2
+        USER --> GLOBAL
+
+        REQ1["Request in org-acme"] --> EFF1["Effective: admin + viewer"]
+        REQ2["Request in org-globex"] --> EFF2["Effective: viewer + viewer"]
+        REQ3["Request (no scope)"] --> EFF3["Effective: viewer only"]
+    end`} />
 
 ### Role-level scope
 
@@ -326,6 +391,28 @@ A few behaviors to be aware of when working with roles:
 Under the hood, `rolesToPolicy()` converts your role definitions into a single ABAC
 policy. Understanding this conversion helps you reason about how RBAC and ABAC
 interact.
+
+<MermaidDiagram chart={`flowchart LR
+    subgraph Input["Role Definitions"]
+        direction TB
+        VIEWER["viewer\nread:post, read:comment"]
+        EDITOR["editor (inherits viewer)\ncreate:post, update:post"]
+    end
+
+    Input --> FLATTEN["1. Flatten\ninheritance"]
+    FLATTEN --> RULES["2. Each permission\nbecomes a Rule"]
+
+    subgraph Generated["Generated Rules (allow-overrides)"]
+        direction TB
+        R1["rbac.viewer.read.post\ncondition: roles contains 'viewer'"]
+        R2["rbac.viewer.read.comment\ncondition: roles contains 'viewer'"]
+        R3["rbac.editor.create.post\ncondition: roles contains 'editor'"]
+        R4["rbac.editor.update.post\ncondition: roles contains 'editor'"]
+        R5["rbac.editor.read.post (inherited)\ncondition: roles contains 'editor'"]
+    end
+
+    RULES --> Generated
+    Generated --> POLICY["3. Wrapped in __rbac__ policy"]`} />
 
 For each role, the function:
 

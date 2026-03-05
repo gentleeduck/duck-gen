@@ -46,7 +46,7 @@ model Post {
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// access-engine tables (add these to your existing schema)
+// duck-iam tables (add these to your existing schema)
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 model AccessPolicy {

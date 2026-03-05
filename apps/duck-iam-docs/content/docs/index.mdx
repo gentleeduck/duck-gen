@@ -54,6 +54,37 @@ policies, so the same condition engine handles everything.
 
 duck-iam has four core concepts:
 
+<MermaidDiagram chart={`flowchart TD
+    subgraph Your_App["Your Application"]
+        direction TB
+        SERVER["Server (Express / Hono / NestJS / Next.js)"]
+        CLIENT["Client (React / Vue / Vanilla)"]
+    end
+
+    subgraph Engine_Block["duck-iam Engine"]
+        direction TB
+        ENGINE["Engine"]
+        ENGINE --> EVAL["Evaluation Pipeline"]
+        EVAL --> RBAC_EVAL["RBAC: Roles -> Policy"]
+        EVAL --> ABAC_EVAL["ABAC: User-defined Policies"]
+        RBAC_EVAL --> COMBINE["AND-Combine Results"]
+        ABAC_EVAL --> COMBINE
+        COMBINE --> DECISION["Decision: allow / deny"]
+    end
+
+    subgraph Storage["Storage Adapters"]
+        direction TB
+        MEM["MemoryAdapter\n(dev/testing)"]
+        PRISMA["PrismaAdapter\n(production DB)"]
+        DRIZZLE["DrizzleAdapter\n(production DB)"]
+        HTTP_AD["HttpAdapter\n(remote service)"]
+    end
+
+    SERVER --> ENGINE
+    ENGINE --> Storage
+    ENGINE --> PERM_MAP["PermissionMap"]
+    PERM_MAP --> CLIENT`} />
+
 **Engine** -- The central evaluator. You create an `Engine` with an adapter, then call
 `engine.can()`, `engine.check()`, `engine.permissions()`, or `engine.explain()`. The engine
 loads roles and policies from the adapter, resolves the subject, and runs the evaluation.
@@ -74,6 +105,30 @@ This means RBAC permissions can also carry conditions (e.g., owner-only grants).
 ## How It Works
 
 When an authorization request comes in, the engine follows this pipeline:
+
+<MermaidDiagram chart={`flowchart TD
+    A["1. Resolve Subject"] --> B["Load roles from adapter"]
+    B --> C["Walk inheritance: editor -> viewer"]
+    C --> D["Merge scoped roles for request scope"]
+    D --> E["Load subject attributes"]
+
+    E --> F["2. Load Policies"]
+    F --> G["Convert all roles -> synthetic __rbac__ policy"]
+    G --> H["Fetch user-defined ABAC policies from adapter"]
+
+    H --> I["3. Evaluate Each Policy"]
+    I --> J["Check policy targets"]
+    J --> K["Match rules: action + resource + conditions"]
+    K --> L["Apply combining algorithm per policy"]
+
+    L --> M["4. AND-Combine Across Policies"]
+    M --> N{"Any deny?"}
+    N -- "Yes" --> O["DENIED"]
+    N -- "No" --> P["ALLOWED"]
+
+    O --> Q["5. Return Decision"]
+    P --> Q
+    Q --> R["Decision: allowed, effect, rule, policy, reason, duration"]`} />
 
 1. **Resolve subject** -- Load the user's roles, scoped roles, and attributes from the adapter.
 2. **Enrich scoped roles** -- If the request has a scope (e.g., `org-1`), merge in any roles assigned to that scope.

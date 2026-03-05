@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { matchesAction, matchesResource, matchesResourceHierarchical, matchesScope, resolve } from './resolve'
-import type { AccessRequest } from './types'
+import { matchesAction, matchesResource, matchesResourceHierarchical, matchesScope, resolve } from '../resolve'
+import type { AccessRequest } from '../types'
 
 const baseRequest: AccessRequest = {
   subject: {

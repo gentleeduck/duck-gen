@@ -3,7 +3,6 @@ import './globals.css'
 import '@gentleduck/motion/css'
 import { DocsProvider, TailwindIndicator, ThemeProvider } from '@gentleduck/docs/client'
 import { cn } from '@gentleduck/libs/cn'
-import { Toaster } from '@gentleduck/registry-ui-duckui/sonner'
 import { KeyProvider } from '@gentleduck/vim/react'
 import { Geist_Mono, Montserrat } from 'next/font/google'
 import { docsConfig } from '~/config/docs'
@@ -77,8 +76,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div className="relative flex min-h-svh flex-col bg-background">{children}</div>
               </div>
             </DocsProvider>
-
-            <Toaster />
             {process.env.NODE_ENV === 'development' && <TailwindIndicator />}
           </ThemeProvider>
         </KeyProvider>

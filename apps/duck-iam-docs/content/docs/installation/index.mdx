@@ -151,6 +151,37 @@ interfaces internally instead of importing framework packages.
 
 duck-iam uses subpath exports to keep your bundle lean. Import only what you need:
 
+<MermaidDiagram chart={`flowchart LR
+    subgraph Core["duck-iam (core)"]
+        direction TB
+        C1["Engine, defineRole, policy"]
+        C2["when, MemoryAdapter, types"]
+    end
+
+    subgraph Server["duck-iam/server/*"]
+        direction TB
+        S1["server/express"]
+        S2["server/hono"]
+        S3["server/nest"]
+        S4["server/next"]
+        S5["server/generic"]
+    end
+
+    subgraph Client["duck-iam/client/*"]
+        direction TB
+        CL1["client/react"]
+        CL2["client/vue"]
+        CL3["client/vanilla"]
+    end
+
+    subgraph Adapters["duck-iam/adapters/*"]
+        direction TB
+        A1["adapters/memory"]
+        A2["adapters/prisma"]
+        A3["adapters/drizzle"]
+        A4["adapters/http"]
+    end`} />
+
 ```typescript
 // Core engine, builders, memory adapter, types
 import { Engine, defineRole, policy, when, MemoryAdapter } from "duck-iam";

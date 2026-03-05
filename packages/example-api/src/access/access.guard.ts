@@ -1,7 +1,7 @@
 import type { AppAction, AppResource, AppRole, AppScope } from '@gentleduck/example-shared'
 import { type CanActivate, type ExecutionContext, Inject, Injectable } from '@nestjs/common'
-import type { Engine } from 'access-engine'
-import { ACCESS_ENGINE_TOKEN, nestAccessGuard } from 'access-engine/server/nest'
+import type { Engine } from 'duck-iam'
+import { ACCESS_ENGINE_TOKEN, nestAccessGuard } from 'duck-iam/server/nest'
 
 @Injectable()
 export class AccessGuard implements CanActivate {

@@ -12,8 +12,8 @@ import {
   Put,
   Req,
 } from '@nestjs/common'
-import type { Engine } from 'access-engine'
-import { ACCESS_ENGINE_TOKEN } from 'access-engine/server/nest'
+import type { Engine } from 'duck-iam'
+import { ACCESS_ENGINE_TOKEN } from 'duck-iam/server/nest'
 import { Authorize } from '../access/authorize'
 import { type AuthenticatedRequest, extractUserId } from '../shared/auth'
 import type { PostsService } from './posts.service'

@@ -1,4 +1,4 @@
-# access-engine
+# duck-iam
 
 Modern ABAC/RBAC access control engine for TypeScript. Framework-agnostic core with integrations for Express, NestJS, Hono, Next.js, React, and Vue.
 
@@ -8,7 +8,7 @@ Modern ABAC/RBAC access control engine for TypeScript. Framework-agnostic core w
 ## What's in the repo
 
 ### Packages
-- `packages/duck-iam` — `access-engine` core library (RBAC + ABAC + hybrid)
+- `packages/duck-iam` — `duck-iam` core library (RBAC + ABAC + hybrid)
 - `packages/example-shared` — shared access config, types, and DB schema for examples
 - `packages/example-api` — NestJS backend example with typed `@Authorize()` decorators
 - `packages/example-app` — Next.js frontend example with `<Can>` / `useAccess()` components

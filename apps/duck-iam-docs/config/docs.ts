@@ -85,6 +85,48 @@ export const docsConfig = {
       ],
       title: 'Advanced',
     },
+    {
+      collapsible: false,
+      items: [
+        {
+          href: '/docs/course',
+          title: 'Course Overview',
+        },
+        {
+          href: '/docs/course/chapter-1',
+          title: '1. First Permission Check',
+        },
+        {
+          href: '/docs/course/chapter-2',
+          title: '2. Role Hierarchies',
+        },
+        {
+          href: '/docs/course/chapter-3',
+          title: '3. Policies & Conditions',
+        },
+        {
+          href: '/docs/course/chapter-4',
+          title: '4. Engine In Depth',
+        },
+        {
+          href: '/docs/course/chapter-5',
+          title: '5. Multi-Tenant Scoping',
+        },
+        {
+          href: '/docs/course/chapter-6',
+          title: '6. Server Integration',
+        },
+        {
+          href: '/docs/course/chapter-7',
+          title: '7. Client Libraries',
+        },
+        {
+          href: '/docs/course/chapter-8',
+          title: '8. Production Readiness',
+        },
+      ],
+      title: 'Course',
+    },
   ],
 } satisfies DocsConfig
 

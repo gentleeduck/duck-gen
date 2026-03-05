@@ -1,4 +1,4 @@
-// Seeds the access-engine tables with roles, policies, and test data.
+// Seeds the duck-iam tables with roles, policies, and test data.
 //
 // Run with: bun prisma/seed.ts
 // Or: npx prisma db seed
@@ -9,7 +9,7 @@ import { policies, roles } from '../src/access'
 const prisma = new PrismaClient()
 
 async function main() {
-  console.log('Seeding access-engine tables...\n')
+  console.log('Seeding duck-iam tables...\n')
 
   // ── 1. Seed roles ──
 

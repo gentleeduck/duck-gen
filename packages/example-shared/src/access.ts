@@ -1,5 +1,5 @@
-import { createAccessConfig } from 'access-engine'
-import { PrismaAdapter } from 'access-engine/adapters/prisma'
+import { createAccessConfig } from 'duck-iam'
+import { PrismaAdapter } from 'duck-iam/adapters/prisma'
 import { prisma } from './prisma'
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -250,7 +250,7 @@ export const engine = access.createEngine({
   hooks: {
     onDeny: (req, decision) => {
       console.warn(
-        `[access-engine] DENIED: subject=${req.subject.id} ` +
+        `[duck-iam] DENIED: subject=${req.subject.id} ` +
           `action=${req.action} resource=${req.resource.type}` +
           `${req.resource.id ? `:${req.resource.id}` : ''} ` +
           `${req.scope ? `scope=${req.scope} ` : ''}` +
@@ -258,7 +258,7 @@ export const engine = access.createEngine({
       )
     },
     onError: (error, req) => {
-      console.error(`[access-engine] ERROR evaluating ${req.action}:${req.resource.type}`, error)
+      console.error(`[duck-iam] ERROR evaluating ${req.action}:${req.resource.type}`, error)
     },
   },
 })
