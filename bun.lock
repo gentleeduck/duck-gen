@@ -13,8 +13,8 @@
         "vercel": "^50.1.6",
       },
     },
-    "apps/duck-iam-docs": {
-      "name": "@gentleduck/iam-docs",
+    "apps/duck-gen-docs": {
+      "name": "@gentleduck/gen-docs",
       "version": "0.0.21",
       "dependencies": {
         "@gentleduck/docs": "^0.1.0",
@@ -24,10 +24,10 @@
         "@gentleduck/registry-ui": "^0.2.4",
         "@gentleduck/vim": "^0.1.15",
         "geist": "^1.7.0",
+        "jotai": "^2.18.0",
         "lucide-react": "0.562.0",
         "next": "^16.1.1",
         "next-sitemap": "^4.2.3",
-        "next-themes": "^0.4.6",
         "react": "^19.2.3",
         "react-dom": "^19.2.3",
         "tw-animate-css": "^1.4.0",
@@ -376,11 +376,11 @@
 
     "@gentleduck/gen": ["@gentleduck/gen@workspace:packages/duck-gen"],
 
+    "@gentleduck/gen-docs": ["@gentleduck/gen-docs@workspace:apps/duck-gen-docs"],
+
     "@gentleduck/github": ["@gentleduck/github@workspace:tooling/github"],
 
     "@gentleduck/hooks": ["@gentleduck/hooks@0.1.11", "", { "peerDependencies": { "react": "^19.2.4", "react-dom": "^19.2.4" } }, "sha512-kTRrQ6dUaCr/lCJgpfV4kA4qKvYB3iNrvJulgRoHYAuMfd17Ni0r5pi8N6TcBdNUWriPbKZw7M8m8pH9QWWILA=="],
-
-    "@gentleduck/iam-docs": ["@gentleduck/iam-docs@workspace:apps/duck-iam-docs"],
 
     "@gentleduck/lazy": ["@gentleduck/lazy@1.2.12", "", { "peerDependencies": { "next": "^16.1.1", "react": "^19.2.4" }, "optionalPeers": ["next"] }, "sha512-UYH1+LIiBHviHYO2IYcOziNOrigNvM8C2qqUlsMRozexlcQ2Ox9Ft7j0jMh+5mKGIIXME6sgdNKK1mPAx5ByZg=="],
 
@@ -1539,6 +1539,8 @@
     "jiti": ["jiti@2.6.1", "", { "bin": { "jiti": "lib/jiti-cli.mjs" } }, "sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ=="],
 
     "jose": ["jose@5.9.6", "", {}, "sha512-AMlnetc9+CV9asI19zHmrgS/WYsWUwCn2R7RzlbJWD7F9eWYUTGyBmU9o6PxngtLGOiDGPRu+Uc4fhKzbpteZQ=="],
+
+    "jotai": ["jotai@2.18.0", "", { "peerDependencies": { "@babel/core": ">=7.0.0", "@babel/template": ">=7.0.0", "@types/react": ">=17.0.0", "react": ">=17.0.0" }, "optionalPeers": ["@babel/core", "@babel/template", "@types/react", "react"] }, "sha512-XI38kGWAvtxAZ+cwHcTgJsd+kJOJGf3OfL4XYaXWZMZ7IIY8e53abpIHvtVn1eAgJ5dlgwlGFnP4psrZ/vZbtA=="],
 
     "js-tokens": ["js-tokens@10.0.0", "", {}, "sha512-lM/UBzQmfJRo9ABXbPWemivdCW8V2G8FHaHdypQaIy523snUjog0W71ayWXTjiR+ixeMyVHN2XcpnTd/liPg/Q=="],
 
