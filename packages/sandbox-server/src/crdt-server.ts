@@ -1,6 +1,6 @@
 import * as Automerge from '@automerge/automerge'
 import { uuidv7 } from 'uuidv7'
-import { WebSocket, WebSocketServer } from 'ws'
+import { type WebSocket, WebSocketServer } from 'ws'
 
 const wss = new WebSocketServer({ port: 3030 })
 const docs = new Map<string, Automerge.Doc<{ content: string }>>() // keyed by file path

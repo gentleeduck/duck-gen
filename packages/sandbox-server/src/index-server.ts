@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { uuidv7 } from 'uuidv7'
 import { WebSocket, WebSocketServer } from 'ws'
-import { ChatHistory, Message } from './index.types'
+import type { ChatHistory, Message } from './index.types'
 
 const PORT = 8080
 const server = new WebSocketServer({ port: PORT })

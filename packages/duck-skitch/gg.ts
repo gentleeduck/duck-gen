@@ -17,11 +17,12 @@ type Split<S extends string, D extends string> = string extends S
       : [S]
 
 // Map trim on split result tuple
-type TrimmedSplit<S extends string, D extends string> = Split<S, D> extends infer Parts
-  ? Parts extends readonly string[]
-    ? { [K in keyof Parts]: Trim<Parts[K] & string> }
+type TrimmedSplit<S extends string, D extends string> =
+  Split<S, D> extends infer Parts
+    ? Parts extends readonly string[]
+      ? { [K in keyof Parts]: Trim<Parts[K] & string> }
+      : never
     : never
-  : never
 
 type TrimLength<T extends string> = TrimmedSplit<T, '|>'>['length']
 //////

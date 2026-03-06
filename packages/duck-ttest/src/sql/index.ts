@@ -187,13 +187,14 @@ export type InferSchema<S extends string> =
     : never
 
 // --- Reference resolution ---
-export type ResolveRef<T, Schemas extends Record<string, any>> = T extends Ref<infer Tbl, infer Col>
-  ? Tbl extends keyof Schemas
-    ? Col extends keyof Schemas[Tbl]
-      ? Schemas[Tbl][Col]
+export type ResolveRef<T, Schemas extends Record<string, any>> =
+  T extends Ref<infer Tbl, infer Col>
+    ? Tbl extends keyof Schemas
+      ? Col extends keyof Schemas[Tbl]
+        ? Schemas[Tbl][Col]
+        : unknown
       : unknown
-    : unknown
-  : T
+    : T
 
 export type ResolveFields<T, Schemas extends Record<string, any>> = {
   [P in keyof T]: ResolveRef<T[P], Schemas>

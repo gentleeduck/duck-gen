@@ -1,5 +1,5 @@
 import z from 'zod'
-import { AuthMessagesType } from './auth.types'
+import type { AuthMessagesType } from './auth.types'
 
 const errorMessage = <T extends AuthMessagesType>(message: T) => ({ message })
 

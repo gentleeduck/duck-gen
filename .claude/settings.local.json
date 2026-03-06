@@ -48,7 +48,10 @@
       "Bash(npx:*)",
       "Bash(/run/media/wildduck/wildduck/@duck/@duck-iam/apps/duck-iam-docs/node_modules/.bin/velite:*)",
       "Bash(git commit:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(git checkout:*)",
+      "Bash(git push:*)"
     ]
   }
 }

@@ -1,7 +1,7 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { ApiRoutes, GetReq, GetRes, I18AuthMessages } from '../index.d'
+import type { ApiRoutes, GetReq, GetRes, I18AuthMessages } from '../index.d'
 
 function Signin() {
   const { register, handleSubmit } = useForm({

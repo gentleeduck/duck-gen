@@ -2,7 +2,7 @@ import readline from 'node:readline'
 import chalk from 'chalk'
 import { uuidv7 } from 'uuidv7'
 import WebSocket from 'ws'
-import { Message } from './index.types'
+import type { Message } from './index.types'
 
 let currentUserId: string | null = uuidv7()
 let currentUserName: string = 'Anonymous'
