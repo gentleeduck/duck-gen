@@ -6,25 +6,24 @@ React Query, and a typed i18n dictionary.
 
 ## Setup
 
+From the repo root:
+
 ```bash
-cd packages/duck-gen/examples/nestjs-react-query
 bun install
+bun run --filter @gentleduck/duck-gen-example gen
 ```
 
-## Generate types
+## Build
 
 ```bash
-bun run gen
+bun run --filter @gentleduck/duck-gen-example build
 ```
 
-## Run
+## Run (optional)
 
 ```bash
-# Server
-cd server && bun run dev
-
-# Client (in another terminal)
-cd client && bun run dev
+bun run --filter @gentleduck/duck-gen-example-server dev
+bun run --filter @gentleduck/duck-gen-example-client dev
 ```
 
 By default, the client expects the API at `http://localhost:3000`.
