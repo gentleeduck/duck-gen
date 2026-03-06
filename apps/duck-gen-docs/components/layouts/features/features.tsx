@@ -35,48 +35,42 @@ function FeatureCard({
 const features = [
   {
     bgColor: 'bg-blue-500/10',
-    description:
-      'Scan framework controllers and generate typed API contracts so clients always stay in sync.',
+    description: 'Scan framework controllers and generate typed API contracts so clients always stay in sync.',
     icon: <Zap aria-hidden="true" className="h-7 w-7" />,
     textColor: 'text-blue-500',
     title: 'Contract-First Generation',
   },
   {
     bgColor: 'bg-yellow-500/10',
-    description:
-      'Automatically create request and response types for every route. No manual duplication needed.',
+    description: 'Automatically create request and response types for every route. No manual duplication needed.',
     icon: <Server aria-hidden="true" className="h-7 w-7" />,
     textColor: 'text-yellow-500',
     title: 'Typed Routes and DTOs',
   },
   {
     bgColor: 'bg-purple-500/10',
-    description:
-      'Extract message tags into fully typed keys so your i18n workflows are predictable and safe.',
+    description: 'Extract message tags into fully typed keys so your i18n workflows are predictable and safe.',
     icon: <FileText aria-hidden="true" className="h-7 w-7" />,
     textColor: 'text-purple-500',
     title: 'Message Tag Safety',
   },
   {
     bgColor: 'bg-green-500/10',
-    description:
-      'Produce structured outputs that plug directly into client SDKs and documentation pipelines.',
+    description: 'Produce structured outputs that plug directly into client SDKs and documentation pipelines.',
     icon: <Layers aria-hidden="true" className="h-7 w-7" />,
     textColor: 'text-green-500',
     title: 'Composable Output',
   },
   {
     bgColor: 'bg-orange-500/10',
-    description:
-      'Generate once for a snapshot, or run in watch mode to keep types in sync during development.',
+    description: 'Generate once for a snapshot, or run in watch mode to keep types in sync during development.',
     icon: <Terminal aria-hidden="true" className="h-7 w-7" />,
     textColor: 'text-orange-500',
     title: 'CLI and Watch Mode',
   },
   {
     bgColor: 'bg-sky-500/10',
-    description:
-      'A pluggable architecture designed for multiple frameworks. Currently validated with NestJS.',
+    description: 'A pluggable architecture designed for multiple frameworks. Currently validated with NestJS.',
     icon: <Puzzle aria-hidden="true" className="h-7 w-7" />,
     textColor: 'text-sky-500',
     title: 'Framework Friendly',
