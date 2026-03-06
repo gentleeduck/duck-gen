@@ -5,9 +5,7 @@
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "fixed": [],
-  "ignore": [
-    "@gentleduck/iam-docs"
-  ],
+  "ignore": [],
   "linked": [],
   "updateInternalDependencies": "minor"
 }
