@@ -7,7 +7,7 @@ import { Announcement } from '~/components/announcement'
 import { EcosystemSection } from '~/components/layouts/core-packages'
 import { FeaturesSection } from '~/components/layouts/features'
 
-const title = 'Duck Gen -- Contracts that compile, APIs that stay in sync.'
+const title = 'Duck Gen: Contracts That Compile, APIs That Stay in Sync'
 const description =
   'Duck Gen is a general-purpose compiler extension that scans controllers and message tags to keep your API and i18n types aligned'
 
