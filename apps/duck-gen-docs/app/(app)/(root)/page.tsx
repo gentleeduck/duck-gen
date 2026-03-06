@@ -1,10 +1,8 @@
 import { PageActions, PageHeader, PageHeaderDescription, PageHeaderHeading } from '@gentleduck/docs/client'
-import { DuckLazyComponent } from '@gentleduck/lazy/lazy-component'
 import { Button } from '@gentleduck/registry-ui/button'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Announcement } from '~/components/announcement'
-import { EcosystemSection } from '~/components/layouts/core-packages'
 import { FeaturesSection } from '~/components/layouts/features'
 import { SponsorsSection } from '~/components/layouts/sponsors'
 
@@ -64,11 +62,8 @@ export default function Page() {
         </PageActions>
       </PageHeader>
       <div className="container-wrapper">
-        <div>
+        <div className="">
           <FeaturesSection />
-          <DuckLazyComponent options={{ rootMargin: '-50px 0px 0px 0px', threshold: 0 }}>
-            <EcosystemSection />
-          </DuckLazyComponent>
           <SponsorsSection />
         </div>
       </div>
