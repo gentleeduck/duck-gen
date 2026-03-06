@@ -47,6 +47,48 @@ export const docsConfig = {
       collapsible: false,
       items: [
         {
+          href: '/docs/course',
+          title: 'Course Overview',
+        },
+        {
+          href: '/docs/course/the-problem',
+          title: '1. The Problem',
+        },
+        {
+          href: '/docs/course/project-setup',
+          title: '2. Project Setup',
+        },
+        {
+          href: '/docs/course/first-controller',
+          title: '3. Your First Controller',
+        },
+        {
+          href: '/docs/course/generating-types',
+          title: '4. Generating Types',
+        },
+        {
+          href: '/docs/course/using-generated-types',
+          title: '5. Using Generated Types',
+        },
+        {
+          href: '/docs/course/message-keys',
+          title: '6. Message Keys',
+        },
+        {
+          href: '/docs/course/duck-query-client',
+          title: '7. Duck Query Client',
+        },
+        {
+          href: '/docs/course/real-world-patterns',
+          title: '8. Real World Patterns',
+        },
+      ],
+      title: 'Course',
+    },
+    {
+      collapsible: false,
+      items: [
+        {
           href: '/docs/duck-gen',
           title: 'Overview',
         },
