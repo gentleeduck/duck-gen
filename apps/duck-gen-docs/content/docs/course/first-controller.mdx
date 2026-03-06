@@ -181,10 +181,10 @@ When you run `duck-gen`, it finds `UsersController` and extracts five routes:
 | Method | Path | Body | Query | Params | Response |
 | --- | --- | --- | --- | --- | --- |
 | GET | /api/users | - | PaginationDto | - | ApiResponse\<UserDto[], UserMessage\> |
-| GET | /api/users/:id | - | - | { id: string } | ApiResponse\<UserDto, UserMessage\> |
+| GET | /api/users/:id | - | - | `{ id: string }` | ApiResponse\<UserDto, UserMessage\> |
 | POST | /api/users | CreateUserDto | - | - | ApiResponse\<UserDto, UserMessage\> |
-| PUT | /api/users/:id | UpdateUserDto | - | { id: string } | ApiResponse\<UserDto, UserMessage\> |
-| DELETE | /api/users/:id | - | - | { id: string } | ApiResponse\<null, UserMessage\> |
+| PUT | /api/users/:id | UpdateUserDto | - | `{ id: string }` | ApiResponse\<UserDto, UserMessage\> |
+| DELETE | /api/users/:id | - | - | `{ id: string }` | ApiResponse\<null, UserMessage\> |
 
 Each route becomes an entry in the generated route map with fully resolved types.
 
