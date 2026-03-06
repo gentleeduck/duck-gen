@@ -35,7 +35,8 @@ function FeatureCard({
 const features = [
   {
     bgColor: 'bg-blue-500/10',
-    description: 'Generate API contracts from framework controllers so clients stay aligned. Currently tested with NestJS.',
+    description:
+      'Generate API contracts from framework controllers so clients stay aligned. Currently tested with NestJS.',
     icon: <Zap aria-hidden="true" className="h-7 w-7" />,
     textColor: 'text-blue-500',
     title: 'Contract-First Generation',
