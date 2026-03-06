@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Announcement } from '~/components/announcement'
 import { EcosystemSection } from '~/components/layouts/core-packages'
 import { FeaturesSection } from '~/components/layouts/features'
+import { SponsorsSection } from '~/components/layouts/sponsors'
 
 const title = 'Duck Gen: Contracts That Compile, APIs That Stay in Sync'
 const description =
@@ -68,6 +69,7 @@ export default function Page() {
           <DuckLazyComponent options={{ rootMargin: '-50px 0px 0px 0px', threshold: 0 }}>
             <EcosystemSection />
           </DuckLazyComponent>
+          <SponsorsSection />
         </div>
       </div>
     </>
