@@ -3,7 +3,9 @@ import './globals.css'
 import '@gentleduck/motion/css'
 import { DocsProvider, TailwindIndicator, ThemeProvider } from '@gentleduck/docs/client'
 import { cn } from '@gentleduck/libs/cn'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { Toaster } from '@gentleduck/registry-ui/sonner'
+import { TooltipProvider } from '@gentleduck/registry-ui/tooltip'
 import { KeyProvider } from '@gentleduck/vim/react'
 import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
@@ -54,23 +56,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={cn('duck min-h-svh bg-background antialiased')}>
-        <KeyProvider timeoutMs={100}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            disableTransitionOnChange
-            enableColorScheme
-            enableSystem>
-            <DocsProvider docs={docsEntries} docsConfig={docsConfig} siteConfig={docsSiteConfig}>
-              <div vaul-drawer-wrapper="">
-                <div className="relative flex min-h-svh flex-col bg-background">{children}</div>
-              </div>
-            </DocsProvider>
-
-            <Toaster />
-            {process.env.NODE_ENV === 'development' && <TailwindIndicator />}
-          </ThemeProvider>
-        </KeyProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableColorScheme enableSystem>
+          <KeyProvider timeoutMs={100}>
+            <TooltipProvider>
+              <DirectionProvider dir="ltr">
+                <DocsProvider docs={docsEntries} docsConfig={docsConfig} siteConfig={docsSiteConfig}>
+                  <div vaul-drawer-wrapper="">
+                    <div className="relative flex min-h-svh flex-col bg-background">{children}</div>
+                  </div>
+                </DocsProvider>
+              </DirectionProvider>
+              <Toaster />
+              {process.env.NODE_ENV === 'development' && <TailwindIndicator />}
+            </TooltipProvider>
+          </KeyProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
