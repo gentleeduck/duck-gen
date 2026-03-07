@@ -19,13 +19,8 @@ Please treat everyone with respect and kindness.
 ### 1. Fork & Clone
 
 ```bash
-<<<<<<< HEAD
-git clone https://github.com/gentleeduck/duck-ui.git
-cd duck-ui
-=======
 git clone https://github.com/gentleeduck/duck-gen.git
 cd duck-gen
->>>>>>> 68028f2b8f071c10853ff31e15c817d8fd06f964
 ```
 
 ### 2. Install Dependencies

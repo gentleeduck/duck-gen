@@ -1,9 +1,15 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare'
 import type { NextConfig } from 'next'
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url))
 const monorepoRoot = path.join(currentDir, '../..')
+const isDev = process.argv.includes('dev')
+
+if (isDev) {
+  initOpenNextCloudflareForDev()
+}
 
 const nextConfig: NextConfig = {
   devIndicators: false,
@@ -15,7 +21,6 @@ const nextConfig: NextConfig = {
     externalDir: true,
     // swcPlugins: [['@lingui/swc-plugin', {}]],
   },
-  output: 'standalone',
   images: {
     remotePatterns: [
       {
@@ -27,11 +32,11 @@ const nextConfig: NextConfig = {
         protocol: 'https',
       },
       {
-        hostname: 'media.discordapp.net', // Add this line for Discord images
+        hostname: 'media.discordapp.net',
         protocol: 'https',
       },
       {
-        hostname: 'images.unsplash.com', // Add this line for Discord images
+        hostname: 'images.unsplash.com',
         protocol: 'https',
       },
       {
@@ -53,17 +58,8 @@ const nextConfig: NextConfig = {
     ],
   },
   reactStrictMode: false,
-  // redirects: async () => {},
   transpilePackages: ['@gentleduck/registry-ui', '@gentleduck/docs'],
   typescript: {},
-  // rewrites: async () => {
-  //   return [
-  //     {
-  //       source: '/docs/:path*.md',
-  //       destination: '/llm/:path*',
-  //     },
-  //   ]
-  // },
 }
 
 export default nextConfig

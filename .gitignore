@@ -63,3 +63,8 @@ tailwind.config.ts
 **/.fuse_*
 node-compile-cache
 **/tsconfig.tsbuildinfo
+
+# cloudflare / opennext
+.wrangler
+**/.open-next
+**/.dev.vars
