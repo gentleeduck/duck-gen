@@ -48,7 +48,7 @@
     "access": "restricted"
   },
   "scripts": {
-    "build": "next build",
+    "build": "bun run build:prod",
     "build:docs": "bun velite",
     "dev": "next dev",
     "dev:docs": "bun velite dev",
