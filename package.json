@@ -6,10 +6,12 @@
   "devDependencies": {
     "@biomejs/biome": "2.4.6",
     "@changesets/cli": "^2.29.8",
+    "@opennextjs/cloudflare": "^1.17.1",
     "husky": "^9.1.7",
     "turbo": "^2.8.14",
     "typescript": "5.9.3",
-    "vercel": "^50.1.6"
+    "vercel": "^50.1.6",
+    "wrangler": "^4.71.0"
   },
   "name": "gentleduck",
   "description": "duck-iam: Modern ABAC/RBAC access control engine with framework integrations.",
@@ -75,6 +77,8 @@
     "clean:git": "git clean -xdf .cache .turbo node_modules dist",
     "lint:ws": "bunx sherif@latest",
     "postinstall": "bun run lint:ws",
-    "prepare": "husky"
+    "prepare": "husky",
+    "build:gen-docs:prod": "bun run --cwd apps/duck-gen-docs build:prod",
+    "deploy:gen-docs": "bun run --cwd apps/duck-gen-docs deploy"
   }
 }
