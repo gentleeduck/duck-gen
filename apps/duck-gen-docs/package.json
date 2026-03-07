@@ -4,7 +4,7 @@
     "bun": ">=1.3.5"
   },
   "dependencies": {
-    "@gentleduck/docs": "^0.1.1",
+    "@gentleduck/docs": "^0.2.1",
     "@gentleduck/lazy": "^1.2.12",
     "@gentleduck/libs": "^0.1.14",
     "@gentleduck/motion": "^0.1.16",
@@ -21,15 +21,13 @@
   },
   "devDependencies": {
     "@gentleduck/typescript-config": "workspace:*",
-    "@opennextjs/cloudflare": "^1.17.1",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "22.19.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "tailwindcss": "4.1.18",
     "typescript": "5.9.3",
-    "velite": "^0.3.1",
-    "wrangler": "^4.71.0"
+    "velite": "^0.3.1"
   },
   "name": "@gentleduck/gen-docs",
   "author": "GentleDuck (https://www.gentleduck.org)",
@@ -56,9 +54,9 @@
     "postbuild": "next-sitemap && node scripts/fix-required-server-files.mjs",
     "check-types": "tsc -p tsconfig.json --noEmit --pretty false --skipLibCheck",
     "start": "next start",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "build:prod": "opennextjs-cloudflare build",
-    "deploy": "bun run build:prod && opennextjs-cloudflare deploy"
+    "preview": "next build && next start",
+    "build:prod": "next build",
+    "deploy": "bun run build:prod"
   },
   "version": "0.0.21",
   "overrides": {
