@@ -6,4 +6,5 @@
 @source "../node_modules/@gentleduck/motion/src/";
 
 @import "@gentleduck/docs/styles/docs.css";
+@import "./themes.css";
 @import "tw-animate-css";

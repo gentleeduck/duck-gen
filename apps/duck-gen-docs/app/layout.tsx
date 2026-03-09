@@ -7,12 +7,88 @@ import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { Toaster } from '@gentleduck/registry-ui/sonner'
 import { TooltipProvider } from '@gentleduck/registry-ui/tooltip'
 import { KeyProvider } from '@gentleduck/vim/react'
-import { GeistMono } from 'geist/font/mono'
-import { GeistSans } from 'geist/font/sans'
+import localFont from 'next/font/local'
 import { docsConfig } from '~/config/docs'
 import { METADATA } from '~/config/metadata'
 import { META_THEME_COLORS, siteConfig } from '~/config/site'
 import { docs } from '../.velite'
+
+const fontSans = localFont({
+  src: [
+    { path: '../public/fonts/inter/inter-latin-ext-400-normal.woff2', style: 'normal', weight: '400' },
+    { path: '../public/fonts/inter/inter-latin-ext-500-normal.woff2', style: 'normal', weight: '500' },
+    { path: '../public/fonts/inter/inter-latin-ext-700-normal.woff2', style: 'normal', weight: '700' },
+    { path: '../public/fonts/inter/inter-latin-ext-400-italic.woff2', style: 'italic', weight: '400' },
+    { path: '../public/fonts/inter/inter-latin-ext-500-italic.woff2', style: 'italic', weight: '500' },
+    { path: '../public/fonts/inter/inter-latin-ext-700-italic.woff2', style: 'italic', weight: '700' },
+  ],
+  variable: '--font-sans-font',
+  display: 'swap',
+  preload: false,
+  fallback: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+})
+
+const fontSerif = localFont({
+  src: [
+    { path: '../public/fonts/inria-serif/InriaSerif-Regular.ttf', style: 'normal', weight: '400' },
+    { path: '../public/fonts/inria-serif/InriaSerif-Light.ttf', style: 'normal', weight: '300' },
+    { path: '../public/fonts/inria-serif/InriaSerif-Bold.ttf', style: 'normal', weight: '700' },
+    { path: '../public/fonts/inria-serif/InriaSerif-Italic.ttf', style: 'italic', weight: '400' },
+    { path: '../public/fonts/inria-serif/InriaSerif-LightItalic.ttf', style: 'italic', weight: '300' },
+    { path: '../public/fonts/inria-serif/InriaSerif-BoldItalic.ttf', style: 'italic', weight: '700' },
+  ],
+  variable: '--font-serif-font',
+  display: 'swap',
+  preload: false,
+  fallback: ['Inria Serif', 'Georgia', 'Times New Roman', 'serif'],
+})
+
+const fontMono = localFont({
+  src: [
+    {
+      path: '../public/fonts/jetbrains-mono-nerd/JetBrainsMonoNerdFontMono-Regular.ttf',
+      style: 'normal',
+      weight: '400',
+    },
+    { path: '../public/fonts/jetbrains-mono-nerd/JetBrainsMonoNerdFontMono-Bold.ttf', style: 'normal', weight: '700' },
+    {
+      path: '../public/fonts/jetbrains-mono-nerd/JetBrainsMonoNerdFontMono-Medium.ttf',
+      style: 'normal',
+      weight: '500',
+    },
+    {
+      path: '../public/fonts/jetbrains-mono-nerd/JetBrainsMonoNerdFontMono-Italic.ttf',
+      style: 'italic',
+      weight: '400',
+    },
+    {
+      path: '../public/fonts/jetbrains-mono-nerd/JetBrainsMonoNerdFontMono-MediumItalic.ttf',
+      style: 'italic',
+      weight: '500',
+    },
+    {
+      path: '../public/fonts/jetbrains-mono-nerd/JetBrainsMonoNerdFontMono-BoldItalic.ttf',
+      style: 'italic',
+      weight: '700',
+    },
+  ],
+  variable: '--font-mono-font',
+  display: 'swap',
+  preload: true,
+  fallback: [
+    'JetBrains Mono Nerd Font Mono',
+    'JetBrains Mono Nerd Font',
+    'JetBrains Mono',
+    'ui-monospace',
+    'SFMono-Regular',
+    'Menlo',
+    'Monaco',
+    'Consolas',
+    'Liberation Mono',
+    'Courier New',
+    'monospace',
+  ],
+})
 
 const docsEntries = docs.map((doc) => {
   const slug = doc.slug.startsWith('/') ? doc.slug : `/${doc.slug}`
@@ -36,7 +112,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html className={`${GeistSans.variable} ${GeistMono.variable}`} dir="ltr" lang="en" suppressHydrationWarning>
+    <html
+      className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable}`}
+      dir="ltr"
+      lang="en"
+      suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
