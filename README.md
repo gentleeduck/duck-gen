@@ -1,79 +1,76 @@
 <p align="center">
-  <a href="https://gentleduck.org">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://gentleduck.org/logo-dark.svg">
-      <img src="https://gentleduck.org/logo-light.svg" height="48" alt="Gentleduck">
-    </picture>
-  </a>
+  <img src="./apps/duck-gen-docs/public/og/gen-home-67.png" alt="gentleduck/gen homepage snapshot (67%)" width="800"/>
 </p>
 
-<p align="center">
-  The official website, docs, and component playground for the <a href="https://gentleduck.org">Gentleduck</a> ecosystem.
-</p>
+# gentleduck/gen
 
-<p align="center">
-  <a href="https://gentleduck.org">Website</a> · <a href="https://github.com/gentleeduck/duck-www/issues">Issues</a> · <a href="./CONTRIBUTING.md">Contributing</a>
-</p>
+Type-safe API and message code generator for TypeScript — compiler tooling, docs, and related packages.
 
----
+## Documentation
+- Docs app: `apps/duck-gen-docs`
+- Live site: https://gen.gentleduck.org
+- GitHub: https://github.com/gentleeduck/duck-gen
 
-## About
+## Workspace Matrix
 
-**duck-www** is the monorepo powering [gentleduck.org](https://gentleduck.org) — the central hub for Gentleduck's open-source UI components, developer tools, and documentation. It houses the docs site, the local UI package, and all shared tooling configs used across the organization.
+### Apps
 
-## Structure
+| Path | Package | Role | Status |
+| --- | --- | --- | --- |
+| `apps/duck-gen-docs` | `@gentleduck/gen-docs` | Public docs site | Active |
 
-```
-apps/
-  www/             → gentleduck.org (Next.js docs site)
-packages/
-  ui/              → @gentleduck/ui — component library
-tooling/
-  biome/           → shared Biome config
-  tailwind/        → shared Tailwind config
-  typescript/      → shared TypeScript config
-  tsdown/          → shared tsdown config
-  vitest/          → shared Vitest config
-  github/          → GitHub automation
-  bash/            → shell utilities
-```
+### Published Packages
+
+| Path | Package | Role | Status |
+| --- | --- | --- | --- |
+| `packages/duck-gen` | `@gentleduck/gen` | Type-safe API route and message code generator CLI | Active |
+| `packages/duck-query` | `@gentleduck/query` | Type-safe Axios client paired with Duck Gen route maps | Active |
+| `packages/duck-ttest` | `@gentleduck/ttest` | Zero-runtime TypeScript type-level test framework | Active |
+
+### Private / Internal Packages
+
+| Path | Package | Role | Status |
+| --- | --- | --- | --- |
+| `packages/ui` | `@gentleduck/ui` | UI component library (local workspace) | Private, active |
+| `packages/sandbox-server` | `@gentleduck/sandbox-server` | Backend server for testing (tRPC, Hono, Drizzle) | Private, active |
+| `packages/duck-skitch` | `duck-skitch` | Placeholder package | Private |
+
+### Tooling Packages
+
+| Path | Package | Role | Status |
+| --- | --- | --- | --- |
+| `tooling/biome` | `@gentleduck/biome-config` | Shared Biome config | Internal |
+| `tooling/github` | `@gentleduck/github` | GitHub/project automation support | Internal |
+| `tooling/tailwind` | `@gentleduck/tailwind-config` | Shared Tailwind config | Internal |
+| `tooling/tsdown` | `@gentleduck/tsdown-config` | Shared `tsdown` config | Internal |
+| `tooling/typescript` | `@gentleduck/typescript-config` | Shared TypeScript config | Internal |
+| `tooling/vitest` | `@gentleduck/vitest-config` | Shared Vitest config | Internal |
+| `tooling/bash` | `bash` | Shell utilities and misc scripts | Internal |
 
 ## Getting Started
-
-> Requires **Node ≥ 22** and **Bun ≥ 1.3**.
-
 ```bash
-git clone https://github.com/gentleeduck/duck-www.git
-cd duck-www
+git clone https://github.com/gentleeduck/duck-gen.git
+cd duck-gen
 bun install
-bun dev
 ```
 
-## Scripts
+## Run a Single App
+```bash
+bun --filter @gentleduck/gen-docs dev
+```
 
-| Command | Description |
-| --- | --- |
-| `bun dev` | Start all workspace dev servers |
-| `bun run build` | Build all packages and apps |
-| `bun run check` | Run Biome linting and formatting checks |
-| `bun run check-types` | TypeScript type checking |
-| `bun run test` | Run tests across all workspaces |
-| `bun run fix` | Auto-fix lint and formatting issues |
-| `bun run ci` | Full CI pipeline (check → lint → types → test → build) |
-
-## Tech Stack
-
-- **Framework** — [Next.js 16](https://nextjs.org) + React 19
-- **Styling** — [Tailwind CSS 4](https://tailwindcss.com)
-- **Components** — [@gentleduck/ui](./packages/ui), built on [@gentleduck/primitives](https://github.com/gentleeduck/gentleduck)
-- **Build** — [Turborepo](https://turbo.build) + [Bun](https://bun.sh)
-- **Linting** — [Biome](https://biomejs.dev)
-- **Testing** — [Vitest](https://vitest.dev)
+## Common Workspace Commands
+```bash
+bun run dev          # run all workspace dev tasks
+bun run build        # build all packages/apps
+bun run test         # run tests across workspaces
+bun run check        # biome checks
+bun run check-types  # TypeScript type checks
+bun run ci           # non-mutating repo verification (check, workspace lint, types, tests, build)
+```
 
 ## Contributing
-
-See [`CONTRIBUTING.md`](./CONTRIBUTING.md) and [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md).
+We welcome contributions. Please read [`CONTRIBUTING.md`](./CONTRIBUTING.md) and [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md).
 
 ## License
-
-MIT — see [`LICENSE`](./LICENSE).
+MIT. See [`LICENSE`](./LICENSE) for more information.
