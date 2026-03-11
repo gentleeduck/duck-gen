@@ -1,4 +1,4 @@
-import { absoluteUrl } from '@gentleduck/docs/lib'
+import { getSiteUrl, siteUrl } from './site-url'
 
 export const siteConfig = {
   description:
@@ -10,9 +10,9 @@ export const siteConfig = {
     email: 'support@gentleduck.org',
   },
   name: 'gentleduck/gen',
-  ogImage: absoluteUrl('/og/root.png'),
+  ogImage: siteUrl('/og/root.png'),
   title: 'Duck Gen: General-Purpose Compiler Extension',
-  url: absoluteUrl('/'),
+  url: getSiteUrl(),
 }
 
 export type SiteConfig = typeof siteConfig

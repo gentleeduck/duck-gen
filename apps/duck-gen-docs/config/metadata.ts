@@ -1,6 +1,6 @@
-import { absoluteUrl } from '@gentleduck/docs/lib'
 import type { Metadata, Viewport } from 'next'
 import { siteConfig } from './site'
+import { siteUrl } from './site-url'
 
 export const VIEWPORT: Viewport = {
   themeColor: [
@@ -96,7 +96,7 @@ export const SLUG_METADATA = (doc: { title: string; description: string; slug: s
     images: [ogImage],
     title: doc.title,
     type: 'article',
-    url: absoluteUrl(doc.slug),
+    url: siteUrl(doc.slug),
   },
   title: doc.title,
   twitter: {
