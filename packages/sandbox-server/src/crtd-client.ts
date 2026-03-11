@@ -28,7 +28,7 @@ socket.on('message', (data) => {
     const changes = msg.changes.map((c) => new Uint8Array(c))
     doc = Automerge.applyChanges(doc, changes)[0]
     fs.writeFileSync(filePath, doc.content)
-    console.log('📥 Synced initial file:\n' + doc.content)
+    console.log(`📥 Synced initial file:\n${doc.content}`)
 
     rl.prompt()
   }
@@ -42,7 +42,7 @@ socket.on('message', (data) => {
   }
 })
 
-chokidar.watch(filePath, { ignoreInitial: true }).on('change', (path) => {
+chokidar.watch(filePath, { ignoreInitial: true }).on('change', (_path) => {
   const newContent = fs.readFileSync(filePath, 'utf-8')
   if (newContent === doc.content) return
 
@@ -65,7 +65,7 @@ const rl = readline.createInterface({
 
 rl.on('line', (line) => {
   const newDoc = Automerge.change(doc, `${userName} CLI edit`, (d) => {
-    d.content += '\n' + line
+    d.content += `\n${line}`
   })
 
   const changes = Automerge.getChanges(doc, newDoc)

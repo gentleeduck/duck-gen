@@ -1,6 +1,6 @@
 import fs from 'node:fs'
+import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import path from 'path'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -263,9 +263,9 @@ class AdvancedRouteScanner {
       })
       .join('\n')
 
-    output += controllerImports + '\n'
+    output += `${controllerImports}\n`
     if (constantsImports) {
-      output += constantsImports + '\n'
+      output += `${constantsImports}\n`
     }
     output += '\n'
 

@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common'
 import type { AuthService } from './auth.service'
-import type { SignInBody, SignInResponse } from './auth.types'
+import type { SignInBody } from './auth.types'
 
 @Controller('auth')
 export class AuthController {

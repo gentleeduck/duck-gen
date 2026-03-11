@@ -56,7 +56,7 @@ type K = RemoveDuplication<Modifier, CheckDuplication<'uuid |> pk'>>
 declare function table<const T extends ValueT<T>>(value: T): T
 
 // Usage:
-const result = table('uuid |> pk')
+const _result = table('uuid |> pk')
 // result has type ['user', 'id', 'uuid']
 //
 

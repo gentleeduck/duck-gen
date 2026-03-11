@@ -17,7 +17,7 @@ export async function auth_signin({
     }
 
     return { data: user, message: 'AUTH_SIGNIN_SUCCESS', state: 'success' }
-  } catch (error) {
+  } catch (_error) {
     return { message: 'AUTH_SIGNIN_ERROR', state: 'error' }
   }
 }

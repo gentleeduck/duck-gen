@@ -1,8 +1,4 @@
-export function returnMessage<T extends unknown, U extends unknown = null>(
-  data: U,
-  message: T,
-  status: 'success' | 'error',
-) {
+export function returnMessage<T, U = null>(data: U, message: T, status: 'success' | 'error') {
   return { data, message, status }
 }
 

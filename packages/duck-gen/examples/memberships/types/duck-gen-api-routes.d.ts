@@ -1,6 +1,5 @@
 // 🦆 THIS FILE IS AUTO-GENERATED. DO NOT EDIT.
 
-import type { ResponseType } from '../src/memberships.admin.controller'
 import type { MembershipsAdminGetDto } from '../src/memberships.types'
 
 /** 🦆

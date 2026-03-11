@@ -6,7 +6,7 @@ import { scanDuckgenMessages } from '../../messages'
 import { processNestJsApiRoutes } from './api-routes'
 
 export async function processNestJs(config: DuckGenConfig['extensions'], outputPaths: DuckGenOutputTargets) {
-  let project = new Project({
+  const project = new Project({
     tsConfigFilePath: config.shared.tsconfigPath,
   })
 

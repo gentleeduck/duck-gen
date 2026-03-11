@@ -32,7 +32,7 @@ export function emitApiRoutesFile(outFile: string, routes: Route[], imports: Imp
     if (!routesByPath.has(r.fullPath)) {
       routesByPath.set(r.fullPath, [])
     }
-    routesByPath.get(r.fullPath)!.push(r)
+    routesByPath.get(r.fullPath)?.push(r)
   }
 
   for (const path of Array.from(routesByPath.keys()).sort()) {

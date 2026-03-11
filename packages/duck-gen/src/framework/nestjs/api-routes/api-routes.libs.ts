@@ -70,7 +70,7 @@ export function joinUrl(...parts: Array<string | undefined>): string {
     .filter((p) => p !== undefined)
     .map((p) => (p ?? '').trim())
     .filter((p) => p.length > 0)
-    .map((p) => (p.startsWith('/') ? p : '/' + p))
+    .map((p) => (p.startsWith('/') ? p : `/${p}`))
     .join('')
   return s.replace(/\/+/g, '/')
 }
@@ -103,7 +103,7 @@ export function addTypeImportSource(
 ): void {
   const p = path.resolve(symbolInfo.filePath)
   if (!typeImportSources.has(p)) typeImportSources.set(p, new Set())
-  typeImportSources.get(p)!.add(symbolInfo.name)
+  typeImportSources.get(p)?.add(symbolInfo.name)
 }
 
 export function resolveTypeImports(

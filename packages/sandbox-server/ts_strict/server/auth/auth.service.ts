@@ -1,6 +1,4 @@
-import { throwError } from '../libs/error'
 import type { SigninSchemaDto } from './auth.dto'
-import { AuthMessagesType } from './auth.types'
 
 export async function singin(data: SigninSchemaDto) {
   // do some db right here

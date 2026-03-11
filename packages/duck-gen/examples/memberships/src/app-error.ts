@@ -28,7 +28,7 @@ export type MembershipsAdminModule = {
   ) => Promise<RouteResMethod<'/v1/admin/memberships/:id', 'GET'>>
 }
 
-import { createDuckQueryClient, type DuckQueryClient } from '@gentleduck/query'
+import type { DuckQueryClient } from '@gentleduck/query'
 export type DuckClient = DuckQueryClient<ApiRoutes>
 
 export function createMembershipsAdminModule(client: DuckClient): MembershipsAdminModule {

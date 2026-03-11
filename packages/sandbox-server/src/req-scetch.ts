@@ -9,7 +9,7 @@ type Handler = (req: any, res: any, next: any) => any
 type App = Record<string, Handler>
 
 export const app: App = {
-  '/users': (req, res) => {
+  '/users': (_req, res) => {
     return res.json({ users: [{ age: 30, id: '1', name: 'John' }] })
   },
 }
@@ -21,7 +21,7 @@ export type APPRoutes = {
 
 ////
 
-const hi = function req(): APPRoutes['/users'] {}
+const _hi = function req(): APPRoutes['/users'] {}
 
 function foo(): string {
   return ''

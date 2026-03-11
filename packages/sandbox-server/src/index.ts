@@ -1,13 +1,13 @@
 function first() {
   console.log('first(): factory evaluated')
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return (_target: any, _propertyKey: string, _descriptor: PropertyDescriptor) => {
     console.log('first(): called')
   }
 }
 
 function second(name: string) {
   console.log('second(): factory evaluated')
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return (_target: any, _propertyKey: string, _descriptor: PropertyDescriptor) => {
     console.log('second(): called', name)
   }
 }

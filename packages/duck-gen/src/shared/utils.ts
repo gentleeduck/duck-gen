@@ -15,7 +15,7 @@ export function isGeneratedOutputPath(filePath: string): boolean {
 }
 
 export function isTsLibFile(filePath: string): boolean {
-  return /[\\\/]typescript[\\\/]lib[\\\/].*\.d\.ts$/.test(filePath)
+  return /[\\/]typescript[\\/]lib[\\/].*\.d\.ts$/.test(filePath)
 }
 
 export function relImport(fromFile: string, toFile: string): string {
@@ -23,7 +23,7 @@ export function relImport(fromFile: string, toFile: string): string {
     .relative(path.dirname(fromFile), toFile)
     .replace(/\\/g, '/')
     .replace(/\.(d\.ts|ts|tsx)$/, '')
-  return rel.startsWith('.') ? rel : './' + rel
+  return rel.startsWith('.') ? rel : `./${rel}`
 }
 
 export function formatPropKey(key: string): string {

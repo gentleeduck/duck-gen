@@ -1,7 +1,6 @@
 // 🦆 THIS FILE IS AUTO-GENERATED. DO NOT EDIT.
 
-import type { ResponseType } from '../../examples/memberships/src/memberships.admin.controller'
-import type { InferReturning, MembershipsAdminGetDto } from '../../examples/memberships/src/memberships.types'
+import type { MembershipsAdminGetDto } from '../../examples/memberships/src/memberships.types'
 
 /** 🦆
  * 🦆 Internal route metadata shape used by ApiRoutes.

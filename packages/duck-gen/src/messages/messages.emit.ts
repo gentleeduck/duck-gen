@@ -11,7 +11,7 @@ export function emitDuckgenMessagesFile(outFile: string, messages: DuckgenMessag
   for (const msg of messages) {
     const p = relImport(outFile, msg.filePath)
     if (!valueImports.has(p)) valueImports.set(p, new Set())
-    valueImports.get(p)!.add(msg.constName)
+    valueImports.get(p)?.add(msg.constName)
   }
 
   for (const [p, names] of sortMap(valueImports)) {

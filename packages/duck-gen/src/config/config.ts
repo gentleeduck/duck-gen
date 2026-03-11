@@ -8,7 +8,7 @@ export async function load_duckgen_config(cwd: string = process.cwd()) {
   let file_text: string
   try {
     file_text = await fs.readFile(config_path, 'utf8')
-  } catch (e) {
+  } catch (_e) {
     throw new Error(`Failed to read duck-gen.json at: ${config_path}`)
   }
 

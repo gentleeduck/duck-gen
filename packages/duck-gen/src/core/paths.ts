@@ -56,7 +56,7 @@ export function emitFrameworkIndex(outputPaths: DuckGenOutputTargets): void {
   for (const entry of [...outputPaths.apiRoutes, ...outputPaths.messages]) {
     const dir = path.dirname(entry)
     if (!dirCandidates.has(dir)) dirCandidates.set(dir, [])
-    dirCandidates.get(dir)!.push(entry)
+    dirCandidates.get(dir)?.push(entry)
   }
 
   for (const [dir, entries] of dirCandidates) {

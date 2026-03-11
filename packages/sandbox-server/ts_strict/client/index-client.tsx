@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import type { ApiRoutes, GetReq, GetRes, I18AuthMessages } from '../index.d'
 
-function Signin() {
+function _Signin() {
   const { register, handleSubmit } = useForm({
     defaultValues: {
       email: '',
@@ -46,7 +46,7 @@ async function signin({ email, password }: any) {
 
     toast.success(i18n.en[data.message])
     return data
-  } catch (error) {
+  } catch (_error) {
     /// handle error to the user
   }
 }
@@ -61,7 +61,7 @@ const duck_fetch = {
   },
 }
 
-async function signin_with_duck(lang: 'ar' | 'en') {
+async function _signin_with_duck(lang: 'ar' | 'en') {
   const { data } = await duck_fetch.post(
     '/api/auth/signin',
     {

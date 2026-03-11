@@ -1,5 +1,4 @@
 import * as Automerge from '@automerge/automerge'
-import { uuidv7 } from 'uuidv7'
 import { type WebSocket, WebSocketServer } from 'ws'
 
 const wss = new WebSocketServer({ port: 3030 })

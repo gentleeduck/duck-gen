@@ -21,7 +21,7 @@ export type OptionalKey<K extends string> = `${K}?`
 
 declare function type<const S extends Schema>(s: S): S
 
-const User = type({
+const _User = type({
   name: 'string',
   platform: "'android' | 'ios'",
   'version?': 'number | string',

@@ -4,7 +4,7 @@ import { uuidv7 } from 'uuidv7'
 import WebSocket from 'ws'
 import type { Message } from './index.types'
 
-let currentUserId: string | null = uuidv7()
+let _currentUserId: string | null = uuidv7()
 let currentUserName: string = 'Anonymous'
 
 const ws = new WebSocket('ws://localhost:8080')
@@ -35,7 +35,7 @@ ws.on('message', (data) => {
     const msg = JSON.parse(data as never as string) as Message
 
     if (msg.type === 'init') {
-      currentUserId = msg.data.user_id
+      _currentUserId = msg.data.user_id
       process.stdout.write(chalk.green(`Connected as ${msg.data.name}\n`))
 
       rl.prompt()
@@ -49,7 +49,7 @@ ws.on('message', (data) => {
     } else if (msg.type === 'message') {
       printMessage(msg.data as Message<'message'>['data'])
     }
-  } catch (err) {
+  } catch (_err) {
     console.error(chalk.red('Invalid message from server:'), data.toString())
   }
 })

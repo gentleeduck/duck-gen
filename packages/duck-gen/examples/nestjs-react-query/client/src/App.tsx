@@ -28,8 +28,8 @@ export function App() {
 
   const mutation = useMutation<SignInRes, Error, SignInReq>({
     mutationFn: async (req) => {
-      let hi = await client.get('/api/auth/dup', {})
-      let hi1 = await client.post('/api/auth/dup', {})
+      const hi = await client.get('/api/auth/dup', {})
+      const hi1 = await client.post('/api/auth/dup', {})
 
       hi.data.method
       hi1.data.method
@@ -42,7 +42,7 @@ export function App() {
   const message = useMemo(() => {
     if (!mutation.data) return null
     return t(mutation.data.message)
-  }, [locale, mutation.data, t])
+  }, [mutation.data, t])
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
