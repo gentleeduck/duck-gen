@@ -12,14 +12,14 @@ function inferColumnDataTypeText(prop: Symbol): string | undefined {
   if (!decl) return undefined
   if (decl.getKind() !== SyntaxKind.PropertyAssignment) return undefined
 
-  const init = decl.getInitializer()
+  const init = (decl as Node & { getInitializer?(): Node | undefined }).getInitializer?.()
   if (!init) return undefined
 
   const initType = init.getType()
   const typeArgs = initType.getTypeArguments()
   if (!typeArgs.length) return undefined
 
-  const config = typeArgs[0]
+  const config = typeArgs[0]!
   const dataProp = config.getProperty('data')
   if (!dataProp) return undefined
 
@@ -196,7 +196,7 @@ export function expandType(
 
     if (symName === 'Promise') {
       const args = type.getTypeArguments()
-      if (args.length > 0) return expandType(args[0], node, options, seen)
+      if (args.length > 0) return expandType(args[0]!, node, options, seen)
       return options.normalizeAnyToUnknown ? 'Promise<unknown>' : 'Promise<any>'
     }
 
@@ -283,7 +283,7 @@ export function expandType(
         }
       }
 
-      const expandedPropType = inferredText ?? expandType(propType, node, options, newSeen)
+      const expandedPropType = inferredText ?? expandType(propType!, node, options, newSeen)
       lines.push(`${name}${q}: ${expandedPropType}`)
     }
 
