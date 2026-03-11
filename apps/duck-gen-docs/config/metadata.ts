@@ -15,11 +15,11 @@ export const METADATA: Metadata = {
   },
   authors: [
     {
-      name: 'wilddcuk2',
+      name: 'wildduck2',
       url: 'https://github.com/wildduck2',
     },
   ],
-  creator: 'wilddcuk2',
+  creator: 'wildduck2',
   description: siteConfig.description,
   icons: {
     apple: '/apple-touch-icon.png',
@@ -80,29 +80,32 @@ export const METADATA: Metadata = {
   },
 }
 
-const ogImage = {
-  alt: siteConfig.name,
-  height: 630,
-  url: siteConfig.ogImage,
-  width: 1200,
-}
+export const SLUG_METADATA = (doc: { title: string; description: string; slug: string }): Metadata => {
+  const ogImageUrl = siteUrl(`/og?title=${encodeURIComponent(doc.title)}&description=${encodeURIComponent(doc.description)}`)
+  const ogImage = {
+    alt: doc.title,
+    height: 630,
+    url: ogImageUrl,
+    width: 1200,
+  }
 
-export const SLUG_METADATA = (doc: { title: string; description: string; slug: string }): Metadata => ({
-  ...METADATA,
-  description: doc.description,
-  openGraph: {
-    ...METADATA.openGraph,
+  return {
+    ...METADATA,
     description: doc.description,
-    images: [ogImage],
+    openGraph: {
+      ...METADATA.openGraph,
+      description: doc.description,
+      images: [ogImage],
+      title: doc.title,
+      type: 'article',
+      url: siteUrl(doc.slug),
+    },
     title: doc.title,
-    type: 'article',
-    url: siteUrl(doc.slug),
-  },
-  title: doc.title,
-  twitter: {
-    ...METADATA.twitter,
-    description: doc.description,
-    images: [siteConfig.ogImage],
-    title: doc.title,
-  },
-})
+    twitter: {
+      ...METADATA.twitter,
+      description: doc.description,
+      images: [ogImageUrl],
+      title: doc.title,
+    },
+  }
+}
