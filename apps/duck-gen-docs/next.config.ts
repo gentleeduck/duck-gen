@@ -52,7 +52,7 @@ const nextConfig: NextConfig = {
     ],
   },
   reactStrictMode: false,
-  transpilePackages: ['@gentleduck/registry-ui', '@gentleduck/docs'],
+  transpilePackages: ['@gentleduck/ui', '@gentleduck/docs'],
   typescript: {},
 }
 

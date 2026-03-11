@@ -1,6 +1,6 @@
 'use client'
 
-import { Card, CardTitle } from '@gentleduck/registry-ui/card'
+import { Card, CardTitle } from '@gentleduck/ui/card'
 import { FileText, Layers, Puzzle, Server, Terminal, Zap } from 'lucide-react'
 
 export function SectionTitle({ title, subtitle }: { title: string; subtitle: string }) {

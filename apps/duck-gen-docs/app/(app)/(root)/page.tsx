@@ -1,5 +1,5 @@
 import { PageActions, PageHeader, PageHeaderDescription, PageHeaderHeading } from '@gentleduck/docs/client'
-import { Button } from '@gentleduck/registry-ui/button'
+import { Button } from '@gentleduck/ui/button'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Announcement } from '~/components/announcement'

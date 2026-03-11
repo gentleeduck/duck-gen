@@ -1,4 +1,4 @@
-import { Badge } from '@gentleduck/registry-ui/badge'
+import { Badge } from '@gentleduck/ui/badge'
 import { ArrowRightIcon } from 'lucide-react'
 import Link from 'next/link'
 

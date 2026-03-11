@@ -1,3 +1,5 @@
 import { createDocsVeliteConfig } from '@gentleduck/docs/velite'
+import type { UserConfig } from 'velite'
 
-export default createDocsVeliteConfig({})
+const config: UserConfig = createDocsVeliteConfig({})
+export default config

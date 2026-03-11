@@ -1,16 +1,15 @@
 import { DashboardTableOfContents, DocsCopyPage, DocsPagerBottom, DocsPagerTop, Mdx } from '@gentleduck/docs/client'
-import { absoluteUrl } from '@gentleduck/docs/lib'
 import { cn } from '@gentleduck/libs/cn'
-import { badgeVariants } from '@gentleduck/registry-ui/badge'
-import { Button } from '@gentleduck/registry-ui/button'
-import { Separator } from '@gentleduck/registry-ui/separator'
+import { badgeVariants } from '@gentleduck/ui/badge'
+import { Button } from '@gentleduck/ui/button'
+import { Separator } from '@gentleduck/ui/separator'
 import { ArrowDownIcon, ArrowUpIcon, ExternalLinkIcon, SquareArrowOutUpRight } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import React from 'react'
 import { DocsPathBreadcrumb } from '~/components/docs-path-breadcrumb'
 import { SLUG_METADATA } from '~/config/metadata'
+import { siteUrl } from '~/config/site-url'
 import { docs } from '../../../../.velite'
 
 export const dynamic = 'force-static'
@@ -71,7 +70,7 @@ const PostLayout = async ({ params }: { params: Promise<{ slug?: string[] }> }) 
           <DocsPathBreadcrumb segments={_params.slug ?? []} />
           <div className="flex-1" />
           <div className="flex items-center gap-2">
-            <DocsCopyPage page={doc.content} url={absoluteUrl(doc.slug)} />
+            <DocsCopyPage page={doc.content} url={siteUrl(doc.slug)} />
             <DocsPagerTop doc={doc} />
           </div>
         </div>
