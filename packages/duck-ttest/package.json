@@ -10,7 +10,7 @@
   "description": "Compile-time type testing utilities for TypeScript",
   "devDependencies": {
     "@gentleduck/tsdown-config": "workspace:*",
-    "@types/node": "22.19.3",
+    "@types/node": "25.5.0",
     "tsdown": "0.18.3"
   },
   "exports": {
