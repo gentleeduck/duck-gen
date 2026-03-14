@@ -1694,13 +1694,13 @@ export function createMcpServer(): McpServer {
 
         // Extract snippet around the most relevant term
         const queryLower = query.toLowerCase()
-        const queryTerms = queryLower.split(/\s+/).filter((t) => t.length >= 2)
+        const queryTerms = queryLower.split(/\s+/).filter((term: string) => term.length >= 2)
         const lines = doc.cleanBody.split('\n')
         let snippet = ''
 
         for (let i = 0; i < lines.length; i++) {
           const lineLower = lines[i]?.toLowerCase() ?? ''
-          if (queryTerms.some((t) => lineLower.includes(t))) {
+          if (queryTerms.some((term: string) => lineLower.includes(term))) {
             const start = Math.max(0, i - 1)
             const end = Math.min(lines.length, i + 2)
             snippet = lines

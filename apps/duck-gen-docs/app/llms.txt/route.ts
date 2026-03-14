@@ -1,7 +1,7 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
-import { getSiteUrl } from '@/config/site-url'
+import { getSiteUrl } from '~/config/site-url'
 
 const CONTENT_DIR = join(process.cwd(), 'content', 'docs')
 const BASE_URL = getSiteUrl()
