@@ -81,7 +81,9 @@ export const METADATA: Metadata = {
 }
 
 export const SLUG_METADATA = (doc: { title: string; description: string; slug: string }): Metadata => {
-  const ogImageUrl = siteUrl(`/og?title=${encodeURIComponent(doc.title)}&description=${encodeURIComponent(doc.description)}`)
+  const ogImageUrl = siteUrl(
+    `/og?title=${encodeURIComponent(doc.title)}&description=${encodeURIComponent(doc.description)}`,
+  )
   const ogImage = {
     alt: doc.title,
     height: 630,

@@ -4,7 +4,7 @@
     "bun": ">=1.3.5"
   },
   "dependencies": {
-    "@gentleduck/docs": "^0.2.9",
+    "@gentleduck/docs": "^0.2.10",
     "@gentleduck/lazy": "^1.2.14",
     "@gentleduck/libs": "catalog:",
     "@gentleduck/motion": "catalog:",
@@ -18,7 +18,8 @@
     "next-sitemap": "^4.2.3",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
-    "tw-animate-css": "catalog:"
+    "tw-animate-css": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@gentleduck/typescript-config": "workspace:*",
