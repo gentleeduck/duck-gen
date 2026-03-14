@@ -4,13 +4,13 @@
     "bun": ">=1.3.5"
   },
   "dependencies": {
-    "@gentleduck/docs": "^0.2.3",
-    "@gentleduck/lazy": "^1.2.12",
+    "@gentleduck/docs": "^0.2.8",
+    "@gentleduck/lazy": "^1.2.14",
     "@gentleduck/libs": "catalog:",
     "@gentleduck/motion": "catalog:",
     "@gentleduck/ui": "workspace:*",
-    "@modelcontextprotocol/sdk": "^1.27.1",
     "@gentleduck/vim": "catalog:",
+    "@modelcontextprotocol/sdk": "^1.27.1",
     "geist": "^1.7.0",
     "jotai": "^2.18.0",
     "lucide-react": "catalog:",
