@@ -37,6 +37,10 @@ export const docsConfig = {
           title: 'whoiam',
         },
         {
+          href: '/docs/skills',
+          title: 'Agent Skills',
+        },
+        {
           href: '/docs/changelog',
           title: 'Changelog',
         },
