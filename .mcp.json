@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "duck-gen-docs": {
+      "type": "url",
+      "url": "https://gen.gentleduck.org/api/mcp"
+    }
+  }
+}
