@@ -39,31 +39,35 @@ packages/duck-gen/
   src/
     index.ts                # CLI runner: loads config, resolves outputs, runs processor
     config/
+      index.ts              # Barrel re-export
       config.dto.ts         # Zod schema for duck-gen.json (DuckGenConfig type)
       config.ts             # load_duckgen_config() -- reads and validates duck-gen.json
-      config.libs.ts        # INI-style parser helpers (strip_comment, parse_value)
+      config.libs.ts        # INI-style parser helpers (strip_comment, parse_value, unquote, ensure_object_at_path)
     core/
       paths.ts              # Output path resolution, emitFrameworkIndex, emitGeneratedIndex
       types.ts              # DuckGenOutputPaths, DuckGenOutputTargets
     framework/
       index.ts              # getFrameworkProcessor() dispatcher
       nestjs/
+        index.ts            # Barrel re-export
         nestjs.ts           # processNestJs() -- orchestrates API routes + messages
         api-routes/
+          index.ts          # Barrel re-export
           api-routes.ts     # processNestJsApiRoutes() -- scans @Controller classes
           api-routes.emit.ts    # emitApiRoutesFile() -- writes the .d.ts output
-          api-routes.types.ts   # Route, HttpMethod, TypeSymbolImportInfo
+          api-routes.types.ts   # Route, HttpMethod, ImportMaps, TypeSymbolImportInfo
           api-routes.constants.ts  # HTTP_METHOD_DECORATORS, HTTP_METHODS
           api-routes.libs.ts    # AST helpers for decorators, type text, imports
           type-expander.ts      # Deep type expansion for response types
     messages/
+      index.ts              # Barrel re-export
       messages.ts           # scanDuckgenMessages() -- finds @duckgen-tagged exports
       messages.emit.ts      # emitDuckgenMessagesFile() -- writes i18n types
       messages.libs.ts      # parseDuckgenMessagesTag() -- JSDoc tag parser
       messages.types.ts     # DuckgenMessageSource
     shared/
       project.ts            # getProject() -- cached ts-morph Project factory
-      utils.ts              # relImport, formatPropKey, sanitizeTypeText, doc, sortMap
+      utils.ts              # relImport, formatPropKey, sanitizeTypeText, doc, sortMap, isNodeModulesFile
 ```
 
 ## Configuration (duck-gen.json)
@@ -85,12 +89,16 @@ The config file lives at the project root. Schema defined in `config.dto.ts` usi
       "globalPrefix": "/api",
       "normalizeAnyToUnknown": true,
       "outputSource": "./generated",
-      "sourceGlobs": ["src/**/*.controller.ts"]
+      "outputPath": "./generated",
+      "sourceGlobs": ["src/**/*.controller.ts"],
+      "tsconfigPath": "./tsconfig.json"
     },
     "messages": {
       "enabled": true,
       "outputSource": "./generated",
-      "sourceGlobs": ["src/**/*.messages.ts"]
+      "outputPath": "./generated",
+      "sourceGlobs": ["src/**/*.messages.ts"],
+      "tsconfigPath": "./tsconfig.json"
     }
   }
 }
@@ -98,10 +106,12 @@ The config file lives at the project root. Schema defined in `config.dto.ts` usi
 
 Key fields:
 - `framework` -- only `"nestjs"` is supported currently
-- `extensions.shared.outputSource` -- additional output targets shared by both extensions
-- `extensions.apiRoutes.globalPrefix` -- prepended to all route paths
+- `extensions.shared.outputSource` -- output directories merged into both apiRoutes and messages output paths
+- `extensions.apiRoutes.globalPrefix` -- prepended to all route paths (optional)
 - `extensions.apiRoutes.normalizeAnyToUnknown` -- replaces `any` with `unknown` in output
-- `outputSource` -- string or string array of extra output directories
+- `outputSource` -- string or string array of extra output directories (per-extension or shared)
+- `outputPath` -- fallback for `outputSource` when both are set on apiRoutes or messages; `outputSource` takes precedence
+- `tsconfigPath` -- path to tsconfig.json (optional, per-extension or shared)
 
 ## API Route Generation
 
@@ -125,8 +135,13 @@ export type RouteMethod<P extends RoutePath> = RouteOf<P>['method']
 export type RouteRes<P extends RoutePath> = RouteOf<P>['res']
 export type RouteReq<P extends RoutePath> = CleanupNever<Pick<RouteOf<P>, 'body' | 'query' | 'params' | 'headers'>>
 export type DuckFetcher = <P extends RoutePath>(path: P, req: RouteReq<P>) => Promise<RouteRes<P>>
+export type RouteMethods = ApiRoutes[RoutePath]['method']
+export type RouteOfMethod<P extends keyof ApiRoutes, M extends RouteMethods> = Extract<RouteOf<P>, { method: M }>
+export type RouteResMethod<P extends RoutePath, M extends RouteMethods> = RouteOfMethod<P, M>['res']
+export type RouteReqMethod<P extends RoutePath, M extends RouteMethods> = CleanupNever<Pick<RouteOfMethod<P, M>, 'body' | 'query' | 'params' | 'headers'>>
+export type PathsByMethod<M extends RouteMethods> = { [P in RoutePath]: M extends RouteMethod<P> ? P : never }[RoutePath]
 export type DuckClient = { request: DuckFetcher; byMethod: ... }
-// plus: GetBody, GetQuery, GetParams, GetHeaders, GetRes, GetReq, PathsByMethod, RouteResMethod, RouteReqMethod
+// plus: GetBody, GetQuery, GetParams, GetHeaders, GetRes, GetReq
 ```
 
 ## Message Generation (i18n)
@@ -173,22 +188,30 @@ import type { ApiRoutes } from '@gentleduck/gen/generated'
 const api = createDuckQueryClient<ApiRoutes>({ baseURL: 'https://api.example.com' })
 
 // Fully typed -- path, request shape, and response are inferred
+// All methods return Promise<AxiosResponse<RouteRes>>
 const res = await api.post('/api/auth/signin', { body: { email, password } })
 const user = await api.get('/api/users/:id', { params: { id: '123' } })
+
+// Access the underlying Axios instance
+api.axios.interceptors.request.use(...)
 ```
 
-Client methods: `request`, `byMethod`, `get`, `post`, `put`, `patch`, `del`.
+Client properties and methods:
+- `axios` -- the underlying `AxiosInstance`
+- `request` -- generic fetcher (uses `config.method` or defaults to GET)
+- `byMethod` -- explicit method + path fetcher
+- `get`, `post`, `put`, `patch`, `del` -- shorthand methods
 
-Accepts either an `AxiosInstance` or `AxiosRequestConfig` as constructor argument.
+All methods accept an optional trailing `AxiosRequestConfig` for per-request overrides.
+
+Accepts either an `AxiosInstance` or `AxiosRequestConfig` as the argument to `createDuckQueryClient`.
 
 ## CLI Usage
 
 ```bash
-# Run via npx/bunx
+# Run via npx or bunx (bin name is "duck-gen")
+npx duck-gen
 bunx duck-gen
-
-# Or with the bin entry
-npx @gentleduck/gen
 ```
 
 The CLI reads `duck-gen.json` from cwd, runs the configured extensions, and writes `.d.ts` files to the specified output paths. Uses `ora` for spinners and `chalk` for colored output.
