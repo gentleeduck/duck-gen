@@ -216,6 +216,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script>{FONT_PRESET_SCRIPT}</script>
       </head>
       <body className={cn('duck min-h-svh bg-background antialiased')}>
+        {process.env.NODE_ENV === 'development' && (
+          <script crossOrigin="anonymous" src="//unpkg.com/react-grab/dist/index.global.js" />
+        )}
         <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableColorScheme enableSystem>
           <KeyProvider timeoutMs={100}>
             <TooltipProvider>
