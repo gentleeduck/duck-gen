@@ -18,6 +18,8 @@
     "next-sitemap": "^4.2.3",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
+    "react-markdown": "^10.1.0",
+    "shiki": "^2.5.0",
     "tw-animate-css": "catalog:",
     "zod": "catalog:"
   },
