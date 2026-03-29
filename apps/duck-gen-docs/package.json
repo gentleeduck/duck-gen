@@ -19,7 +19,7 @@
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
     "react-markdown": "^10.1.0",
-    "shiki": "^2.5.0",
+    "shiki": "^4.0.2",
     "tw-animate-css": "catalog:",
     "zod": "catalog:"
   },
