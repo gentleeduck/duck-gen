@@ -6,7 +6,7 @@
   "author": "@gentleduck contributors",
   "dependencies": {
     "@vitejs/plugin-react-swc": "^4.3.0",
-    "tsdown": "0.21.2"
+    "tsdown": "0.21.7"
   },
   "devDependencies": {
     "@gentleduck/typescript-config": "workspace:*",
