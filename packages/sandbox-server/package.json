@@ -48,7 +48,7 @@
     "@types/express-mysql-session": "^3.0.6",
     "@types/express-session": "^1.18.2",
     "@types/minio": "^7.1.1",
-    "@types/node": "25.5.0",
+    "@types/node": "25.5.2",
     "@types/nodemailer": "^7.0.1",
     "@types/pg": "^8.16.0",
     "@types/ws": "^8.18.1",
