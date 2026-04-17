@@ -15,7 +15,7 @@
     "ora": "^9.0.0",
     "ts-morph": "^27.0.2",
     "tsx": "^4.21.0",
-    "typescript": "5.9.3",
+    "typescript": "6.0.3",
     "zod": "4.3.6"
   },
   "description": "Type-safe API and message generator for TypeScript projects (NestJS-tested).",
